@@ -1,8 +1,9 @@
-package com.newsroom.service;
+package com.newsroom.service.Impl;
 
 import com.newsroom.dto.AdvertisementDTO;
 import com.newsroom.model.Advertisement;
 import com.newsroom.repository.AdvertisementRepository;
+import com.newsroom.service.IAdvertisementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +14,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AdvertisementService {
+public class AdvertisementServiceImpl implements IAdvertisementService {
     
     private final AdvertisementRepository advertisementRepository;
     
+    @Override
     @Transactional
     public AdvertisementDTO createAdvertisement(AdvertisementDTO dto) {
         Advertisement ad = new Advertisement();
@@ -26,6 +28,7 @@ public class AdvertisementService {
         return convertToDTO(savedAd);
     }
     
+    @Override
     @Transactional
     public AdvertisementDTO updateAdvertisement(String id, AdvertisementDTO dto) {
         Advertisement ad = advertisementRepository.findById(id)
@@ -37,24 +40,28 @@ public class AdvertisementService {
         return convertToDTO(updatedAd);
     }
     
+    @Override
     public AdvertisementDTO getAdvertisementById(String id) {
         Advertisement ad = advertisementRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Advertisement not found"));
         return convertToDTO(ad);
     }
     
+    @Override
     public List<AdvertisementDTO> getAllAdvertisements() {
         return advertisementRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
     
+    @Override
     public List<AdvertisementDTO> getActiveAdvertisements() {
         return advertisementRepository.findByActiveTrue().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
     
+    @Override
     public List<AdvertisementDTO> getAdvertisementsByPosition(String position) {
         LocalDateTime now = LocalDateTime.now();
         
@@ -74,6 +81,7 @@ public class AdvertisementService {
                 .collect(Collectors.toList());
     }
     
+    @Override
     @Transactional
     public void incrementImpression(String id) {
         Advertisement ad = advertisementRepository.findById(id)
@@ -82,6 +90,7 @@ public class AdvertisementService {
         advertisementRepository.save(ad);
     }
     
+    @Override
     @Transactional
     public void incrementClick(String id) {
         Advertisement ad = advertisementRepository.findById(id)
@@ -90,6 +99,7 @@ public class AdvertisementService {
         advertisementRepository.save(ad);
     }
     
+    @Override
     @Transactional
     public void deleteAdvertisement(String id) {
         advertisementRepository.deleteById(id);

@@ -1,7 +1,7 @@
 package com.newsroom.controller;
 
 import com.newsroom.dto.NewsDTO;
-import com.newsroom.service.NewsService;
+import com.newsroom.service.INewsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class NewsController {
-    private final NewsService newsService;
+    private final INewsService newsService;
     
     @PostMapping
     public ResponseEntity<NewsDTO> createNews(@Valid @RequestBody NewsDTO newsDTO, 

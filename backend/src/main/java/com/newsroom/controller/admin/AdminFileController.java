@@ -1,19 +1,14 @@
 package com.newsroom.controller.admin;
 
-import com.newsroom.service.FileStorageService;
+import com.newsroom.service.IFileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +19,7 @@ import java.util.Map;
 @PreAuthorize("hasAnyRole('ADMIN', 'AUTHOR')")
 public class AdminFileController {
     
-    private final FileStorageService fileStorageService;
+    private final IFileStorageService fileStorageService;
     
     @Value("${app.base-url:http://localhost:8080}")
     private String baseUrl;

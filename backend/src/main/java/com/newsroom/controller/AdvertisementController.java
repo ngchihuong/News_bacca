@@ -1,7 +1,7 @@
 package com.newsroom.controller;
 
 import com.newsroom.dto.AdvertisementDTO;
-import com.newsroom.service.AdvertisementService;
+import com.newsroom.service.IAdvertisementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class AdvertisementController {
     
-    private final AdvertisementService advertisementService;
+    private final IAdvertisementService advertisementService;
     
     @GetMapping("/position/{position}")
     public ResponseEntity<List<AdvertisementDTO>> getAdsByPosition(@PathVariable String position) {

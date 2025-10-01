@@ -1,6 +1,6 @@
 package com.newsroom.controller;
 
-import com.newsroom.service.FileStorageService;
+import com.newsroom.service.IFileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -17,7 +17,7 @@ import java.nio.file.Path;
 @CrossOrigin(origins = "*")
 public class FileController {
     
-    private final FileStorageService fileStorageService;
+    private final IFileStorageService fileStorageService;
     
     @GetMapping("/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {

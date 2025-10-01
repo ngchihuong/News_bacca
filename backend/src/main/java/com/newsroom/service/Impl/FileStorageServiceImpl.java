@@ -1,5 +1,6 @@
-package com.newsroom.service;
+package com.newsroom.service.impl;
 
+import com.newsroom.service.IFileStorageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -13,11 +14,11 @@ import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @Service
-public class FileStorageService {
+public class FileStorageServiceImpl implements IFileStorageService {
     
     private final Path fileStorageLocation;
     
-    public FileStorageService(@Value("${file.upload-dir:uploads}") String uploadDir) {
+    public FileStorageServiceImpl(@Value("${file.upload-dir:uploads}") String uploadDir) {
         this.fileStorageLocation = Paths.get(uploadDir)
                 .toAbsolutePath().normalize();
         
@@ -28,6 +29,7 @@ public class FileStorageService {
         }
     }
     
+    @Override
     public String storeFile(MultipartFile file) {
         String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
         
@@ -52,6 +54,7 @@ public class FileStorageService {
         }
     }
     
+    @Override
     public void deleteFile(String fileName) {
         try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
@@ -61,6 +64,7 @@ public class FileStorageService {
         }
     }
     
+    @Override
     public Path getFilePath(String fileName) {
         return this.fileStorageLocation.resolve(fileName).normalize();
     }

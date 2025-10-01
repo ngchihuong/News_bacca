@@ -1,4 +1,4 @@
-package com.newsroom.service;
+package com.newsroom.service.Impl;
 
 import com.newsroom.dto.NewsDTO;
 import com.newsroom.dto.NewsStatsDTO;
@@ -10,6 +10,7 @@ import com.newsroom.repository.NewsRepository;
 import com.newsroom.repository.CategoryRepository;
 import com.newsroom.repository.TagRepository;
 import com.newsroom.repository.UserRepository;
+import com.newsroom.service.INewsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,12 +23,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class NewsService {
+public class NewsServiceImpl implements INewsService {
+    
     private final NewsRepository newsRepository;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     
+    @Override
     @Transactional
     public NewsDTO createNews(NewsDTO newsDTO, String username) {
         News news = new News();
@@ -64,6 +67,7 @@ public class NewsService {
         return convertToDTO(savedNews);
     }
     
+    @Override
     @Transactional
     public NewsDTO updateNews(String id, NewsDTO newsDTO) {
         News news = newsRepository.findById(id)
@@ -99,12 +103,14 @@ public class NewsService {
         return convertToDTO(updatedNews);
     }
     
+    @Override
     public NewsDTO getNewsById(String id) {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("News not found"));
         return convertToDTO(news);
     }
     
+    @Override
     public NewsDTO getNewsBySlug(String slug) {
         News news = newsRepository.findBySlug(slug)
                 .orElseThrow(() -> new RuntimeException("News not found"));
@@ -116,11 +122,13 @@ public class NewsService {
         return convertToDTO(news);
     }
     
+    @Override
     public Page<NewsDTO> getAllPublishedNews(Pageable pageable) {
         Page<News> newsPage = newsRepository.findByStatusOrderByCreatedAtDesc("PUBLISHED", pageable);
         return newsPage.map(this::convertToDTO);
     }
     
+    @Override
     public Page<NewsDTO> getNewsByCategory(String categoryId, Pageable pageable) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
@@ -128,29 +136,29 @@ public class NewsService {
         return newsPage.map(this::convertToDTO);
     }
     
+    @Override
     public Page<NewsDTO> getFeaturedNews(Pageable pageable) {
         return newsRepository.findByFeaturedTrue(pageable).map(this::convertToDTO);
     }
     
+    @Override
     public Page<NewsDTO> getTrendingNews(Pageable pageable) {
         return newsRepository.findByTrendingTrue(pageable).map(this::convertToDTO);
     }
     
-    @Transactional
-    public void deleteNews(String id) {
-        newsRepository.deleteById(id);
-    }
-    
+    @Override
     public Page<NewsDTO> getAllNews(Pageable pageable) {
         Page<News> newsPage = newsRepository.findAll(pageable);
         return newsPage.map(this::convertToDTO);
     }
     
+    @Override
     public Page<NewsDTO> getNewsByStatus(String status, Pageable pageable) {
         Page<News> newsPage = newsRepository.findByStatus(status, pageable);
         return newsPage.map(this::convertToDTO);
     }
     
+    @Override
     public NewsStatsDTO getNewsStats() {
         long totalNews = newsRepository.count();
         long publishedNews = newsRepository.countByStatus("PUBLISHED");
@@ -164,6 +172,12 @@ public class NewsService {
         stats.setFeaturedNews(featuredNews);
         
         return stats;
+    }
+    
+    @Override
+    @Transactional
+    public void deleteNews(String id) {
+        newsRepository.deleteById(id);
     }
     
     private NewsDTO convertToDTO(News news) {

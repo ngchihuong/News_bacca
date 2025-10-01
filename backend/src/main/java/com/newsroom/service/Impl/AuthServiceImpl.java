@@ -1,4 +1,4 @@
-package com.newsroom.service;
+package com.newsroom.service.impl;
 
 import com.newsroom.dto.AuthRequest;
 import com.newsroom.dto.AuthResponse;
@@ -6,6 +6,7 @@ import com.newsroom.dto.RegisterRequest;
 import com.newsroom.model.User;
 import com.newsroom.repository.UserRepository;
 import com.newsroom.security.JwtTokenProvider;
+import com.newsroom.service.IAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,13 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthServiceImpl implements IAuthService {
     
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
     
+    @Override
     @Transactional
     public AuthResponse login(AuthRequest request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -46,6 +48,7 @@ public class AuthService {
         return response;
     }
     
+    @Override
     @Transactional
     public User register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -67,6 +70,7 @@ public class AuthService {
         return userRepository.save(user);
     }
     
+    @Override
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();

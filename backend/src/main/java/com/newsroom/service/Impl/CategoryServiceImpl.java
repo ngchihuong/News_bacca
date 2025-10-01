@@ -1,8 +1,9 @@
-package com.newsroom.service;
+package com.newsroom.service.Impl;
 
 import com.newsroom.dto.CategoryDTO;
 import com.newsroom.model.Category;
 import com.newsroom.repository.CategoryRepository;
+import com.newsroom.service.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,9 +13,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryService {
+public class CategoryServiceImpl implements ICategoryService {
+    
     private final CategoryRepository categoryRepository;
     
+    @Override
     @Transactional
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         Category category = new Category();
@@ -28,6 +31,7 @@ public class CategoryService {
         return convertToDTO(savedCategory);
     }
     
+    @Override
     @Transactional
     public CategoryDTO updateCategory(String id, CategoryDTO categoryDTO) {
         Category category = categoryRepository.findById(id)
@@ -43,30 +47,35 @@ public class CategoryService {
         return convertToDTO(updatedCategory);
     }
     
+    @Override
     public CategoryDTO getCategoryById(String id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
         return convertToDTO(category);
     }
     
+    @Override
     public CategoryDTO getCategoryBySlug(String slug) {
         Category category = categoryRepository.findBySlug(slug)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
         return convertToDTO(category);
     }
     
+    @Override
     public List<CategoryDTO> getAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
     
+    @Override
     public List<CategoryDTO> getActiveCategories() {
         return categoryRepository.findByActiveTrue().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
     
+    @Override
     @Transactional
     public void deleteCategory(String id) {
         categoryRepository.deleteById(id);

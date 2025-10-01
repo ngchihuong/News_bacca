@@ -2,7 +2,7 @@ package com.newsroom.controller.admin;
 
 import com.newsroom.dto.NewsDTO;
 import com.newsroom.dto.NewsStatsDTO;
-import com.newsroom.service.NewsService;
+import com.newsroom.service.INewsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 @PreAuthorize("hasAnyRole('ADMIN', 'AUTHOR')")
 public class AdminNewsController {
     
-    private final NewsService newsService;
+    private final INewsService newsService;
     
     @GetMapping
     public ResponseEntity<Page<NewsDTO>> getAllNews(

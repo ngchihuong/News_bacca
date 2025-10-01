@@ -1,7 +1,7 @@
 package com.newsroom.controller;
 
 import com.newsroom.dto.CategoryDTO;
-import com.newsroom.service.CategoryService;
+import com.newsroom.service.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class CategoryController {
-    private final CategoryService categoryService;
+    private final ICategoryService categoryService;
     
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {

@@ -1,7 +1,7 @@
 package com.newsroom.controller.admin;
 
 import com.newsroom.dto.AdvertisementDTO;
-import com.newsroom.service.AdvertisementService;
+import com.newsroom.service.IAdvertisementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('ADMIN', 'AUTHOR')")
 public class AdminAdvertisementController {
     
-    private final AdvertisementService advertisementService;
+    private final IAdvertisementService advertisementService;
     
     @GetMapping
     public ResponseEntity<List<AdvertisementDTO>> getAllAdvertisements() {

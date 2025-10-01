@@ -1,7 +1,7 @@
 package com.newsroom.controller.admin;
 
 import com.newsroom.dto.CategoryDTO;
-import com.newsroom.service.CategoryService;
+import com.newsroom.service.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('ADMIN', 'AUTHOR')")
 public class AdminCategoryController {
     
-    private final CategoryService categoryService;
+    private final ICategoryService categoryService;
     
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {

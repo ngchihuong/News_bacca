@@ -4,7 +4,7 @@ import com.newsroom.dto.AuthRequest;
 import com.newsroom.dto.AuthResponse;
 import com.newsroom.dto.RegisterRequest;
 import com.newsroom.model.User;
-import com.newsroom.service.AuthService;
+import com.newsroom.service.IAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 @CrossOrigin(origins = "*")
 public class AuthController {
     
-    private final AuthService authService;
+    private final IAuthService authService;
     
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
