@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #FF6600;
+  --secondary: #13357B;
+}
+
+body {
+  @apply bg-white text-gray-900;
+}
+
+.btn-primary {
+  @apply bg-primary hover:bg-primary/90 text-white font-semibold py-2 px-4 rounded transition-colors;
+}
+
+.btn-secondary {
+  @apply bg-secondary hover:bg-secondary/90 text-white font-semibold py-2 px-4 rounded transition-colors;
+}
+
+.overlay {
+  @apply absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white;
+}
+
+.news-card {
+  @apply relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300;
+}
+
+.news-card img {
+  @apply w-full h-full object-cover transition-transform duration-300 hover:scale-105;
+}
+
