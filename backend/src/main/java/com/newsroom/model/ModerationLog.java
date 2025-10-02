@@ -1,37 +1,39 @@
 package com.newsroom.model;
 
+import com.newsroom.enums.TargetType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
-@Document(collection = "categories")
+@Document(collection = "moderation_logs")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Category {
+public class ModerationLog {
+
     @MongoId
     private String id;
 
-    @Indexed(unique = true)
-    private String name;
+    @Field(name = "moderator_id")
+    private String moderatorId; // Người kiểm duyệt
 
-    private String description;
+    private String action;  //hành động sửa, xóa,...
 
-    private String slug;
+    @Field(name = "target_type")
+    private TargetType targetType;
 
-    private Boolean active;
+    @Field(name = "target_id")
+    private String targetId; //	ID của đối tượng
+
     @CreatedDate
     @Field(name = "created_at")
     private Instant createdAt;
@@ -40,4 +42,3 @@ public class Category {
     @Field(name = "updated_at")
     private Instant updatedAt;
 }
-

@@ -6,13 +6,15 @@ import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewsDTO {
+public class ArticleDTO {
     private String id;
     
     @NotBlank(message = "Title is required")
@@ -45,7 +47,7 @@ public class NewsDTO {
     private String status;
     
     private LocalDateTime publishedAt;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 }
 

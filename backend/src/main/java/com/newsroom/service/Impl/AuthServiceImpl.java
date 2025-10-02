@@ -1,4 +1,4 @@
-package com.newsroom.service.impl;
+package com.newsroom.service.Impl;
 
 import com.newsroom.dto.AuthRequest;
 import com.newsroom.dto.AuthResponse;
@@ -43,7 +43,7 @@ public class AuthServiceImpl implements IAuthService {
         response.setType("Bearer");
         response.setUsername(user.getUsername());
         response.setEmail(user.getEmail());
-        response.setRole(user.getRole());
+//        response.setRole(user.getRole());
         
         return response;
     }
@@ -64,7 +64,7 @@ public class AuthServiceImpl implements IAuthService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setFullName(request.getFullName());
-        user.setRole("USER"); // Default role
+//        user.setRole("USER"); // Default role
         user.setActive(true);
         
         return userRepository.save(user);

@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/advertisements")
+@RequestMapping("/news")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
-public class AdvertisementController {
-    
+public class ArticleController {
 
 }
 

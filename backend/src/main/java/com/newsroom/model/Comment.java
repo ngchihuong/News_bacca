@@ -5,9 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Document(collection = "comments")
@@ -18,17 +21,25 @@ public class Comment {
     @Id
     private String id;
     
-    @DBRef
-    private News news;
+    @Field(name = "article_id")
+    private String articleId;
     
-    @DBRef
-    private User user;
+    @Field(name = "user_id")
+    private String userId;
     
     private String content;
+
+    @Field(name = "parent_id")
     private String parentId; // For nested comments
+
     private boolean approved = false;
-    
+
     @CreatedDate
-    private LocalDateTime createdAt;
+    @Field(name = "created_at")
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Field(name = "updated_at")
+    private Instant updatedAt;
 }
 

@@ -24,8 +24,8 @@ public class CategoryServiceImpl implements ICategoryService {
         category.setName(categoryDTO.getName());
         category.setSlug(generateSlug(categoryDTO.getName()));
         category.setDescription(categoryDTO.getDescription());
-        category.setImageUrl(categoryDTO.getImageUrl());
-        category.setActive(true);
+//        category.setImageUrl(categoryDTO.getImageUrl());
+//        category.setActive(true);
         
         Category savedCategory = categoryRepository.save(category);
         return convertToDTO(savedCategory);
@@ -40,8 +40,8 @@ public class CategoryServiceImpl implements ICategoryService {
         category.setName(categoryDTO.getName());
         category.setSlug(generateSlug(categoryDTO.getName()));
         category.setDescription(categoryDTO.getDescription());
-        category.setImageUrl(categoryDTO.getImageUrl());
-        category.setActive(categoryDTO.isActive());
+//        category.setImageUrl(categoryDTO.getImageUrl());
+//        category.setActive(categoryDTO.isActive());
         
         Category updatedCategory = categoryRepository.save(category);
         return convertToDTO(updatedCategory);
@@ -87,10 +87,10 @@ public class CategoryServiceImpl implements ICategoryService {
         dto.setName(category.getName());
         dto.setSlug(category.getSlug());
         dto.setDescription(category.getDescription());
-        dto.setImageUrl(category.getImageUrl());
-        dto.setActive(category.isActive());
-        dto.setCreatedAt(category.getCreatedAt());
-        dto.setUpdatedAt(category.getUpdatedAt());
+//        dto.setImageUrl(category.getImageUrl());
+//        dto.setActive(category.isActive());
+//        dto.setCreatedAt(category.getCreatedAt());
+//        dto.setUpdatedAt(category.getUpdatedAt());
         return dto;
     }
     
