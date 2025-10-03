@@ -27,6 +27,12 @@ public class Category {
     @Indexed(unique = true)
     private String name;
 
+    private String slug;
+
+    private String imageUrl;
+
+    private boolean active;
+
     private String description;
 
     private String slug;
