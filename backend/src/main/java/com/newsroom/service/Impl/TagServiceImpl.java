@@ -39,8 +39,8 @@ public class TagServiceImpl implements ITagService {
     }
 
     @Override
-    public TagDTO getTagBySlug(String slug) {
-        return tagRepository.findBySlug(slug).map(tagMapper::toDto).orElse(null);
+    public Page<TagDTO> getTagBySlug(String slug, Pageable pageable) {
+        return tagRepository.findBySlugContainingIgnoreCase(slug, pageable).map(tagMapper::toDto);
     }
 
     @Override

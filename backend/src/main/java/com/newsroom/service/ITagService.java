@@ -10,7 +10,7 @@ public interface ITagService {
     TagDTO createTag(TagDTO tagDTO);
     TagDTO updateTag(String id, TagDTO tagDTO);
     TagDTO getTagById(String id);
-    TagDTO getTagBySlug(String slug);
+    Page<TagDTO> getTagBySlug(String slug,  Pageable pageable);
     void deleteTag(String id);
-    Page<TagDTO> findAll(Pageable  pageable);
+    Page<TagDTO> findAll(Pageable pageable);
 }
