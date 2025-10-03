@@ -39,3 +39,16 @@ logging:
     com.newsroom: DEBUG
     org.springframework.web: INFO
     org.springframework.data.mongodb: DEBUG
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operationsSorter: method
+    tagsSorter: alpha
+    tryItOutEnabled: true
+    filter: true
+  show-actuator: false
+  packages-to-scan: com.newsroom.controller
