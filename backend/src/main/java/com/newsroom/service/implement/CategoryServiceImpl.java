@@ -1,4 +1,4 @@
-package com.newsroom.service.Impl;
+package com.newsroom.service.implement;
 
 import com.newsroom.dto.CategoryDTO;
 import com.newsroom.model.Category;

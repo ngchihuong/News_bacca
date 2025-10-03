@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,8 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Document(collection = "users")
 @Data
@@ -41,7 +38,7 @@ public class User {
     @Field(name = "avatar_url")
     private String avatarUrl;
 
-    private List<Role> roles;
+    private String role;
 
     private boolean active = false;
 
