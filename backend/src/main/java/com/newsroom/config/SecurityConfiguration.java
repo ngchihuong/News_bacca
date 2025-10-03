@@ -49,6 +49,7 @@ public class SecurityConfiguration {
                                 "/",
                                 ApiPrefixConstants.API_MAPPING_PREFIX + "/auth/login",
                                 ApiPrefixConstants.API_MAPPING_PREFIX +"/auth/register",
+                                ApiPrefixConstants.API_MAPPING_PREFIX +"/auth/register",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/api-docs/**"
@@ -59,6 +60,7 @@ public class SecurityConfiguration {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 )
+
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(FormLoginConfigurer::disable);

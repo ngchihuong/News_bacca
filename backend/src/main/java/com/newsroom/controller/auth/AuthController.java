@@ -11,7 +11,9 @@ import com.newsroom.model.User;
 import com.newsroom.service.auth.IAuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,9 +41,21 @@ public class AuthController {
                     );
         }
         JwtResponse responses = Optional.of(this.authService.login(request)).orElse(null);
+        JwtResponse resNotHeader = JwtResponse.builder()
+                .accessToken(responses.getAccessToken())
+                .user(responses.getUser())
+                .build();
 
-
-        return null;
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, responses.getResponseCookie().toString())
+                .body(
+                        BaseOutput.<JwtResponse>
+                                        builder()
+                                .status(ResponseStatus.SUCCESS)
+                                .message(HttpStatus.OK.toString())
+                                .data(resNotHeader)
+                                .build()
+                );
     }
 
     @PostMapping("/register")
@@ -55,13 +69,36 @@ public class AuthController {
                                     .build()
                     );
         }
-        UserDTO userDTO =this.authService.register(user);
+        UserDTO userDTO = this.authService.register(user);
         return ResponseEntity.ok()
                 .body(
                         BaseOutput.<UserDTO>builder()
                                 .status(ResponseStatus.SUCCESS)
                                 .data(userDTO)
                                 .message(HttpStatus.OK.toString())
+                                .build()
+                );
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<BaseOutput<?>> logout() {
+        this.authService.logout();
+
+        ResponseCookie deleteSpringCookie =
+                ResponseCookie
+                        .from("refresh_token", null)
+                        .httpOnly(true)
+                        .secure(true)
+                        .path("/")
+                        .maxAge(0)
+                        .build();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, deleteSpringCookie.toString())
+                .body(
+                        BaseOutput.builder()
+                                .status(ResponseStatus.SUCCESS)
+                                .message(HttpStatus.OK.toString())
+                                .data("Logged out successfully!")
                                 .build()
                 );
     }

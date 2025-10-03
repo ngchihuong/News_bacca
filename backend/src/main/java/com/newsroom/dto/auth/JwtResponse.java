@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
+import org.springframework.http.ResponseCookie;
 
 @Data
 @Builder
@@ -15,6 +14,8 @@ import java.util.List;
 public class JwtResponse {
     @JsonProperty("access_token")
     private String accessToken;
+    private UserLogin user;
+    private ResponseCookie responseCookie;
 
     @Data
     @Builder
@@ -24,7 +25,7 @@ public class JwtResponse {
         private String type = "Bearer";
         private String id;
         private String name;
-        private List<String> roles;
+        private String role;
     }
 
     @Data

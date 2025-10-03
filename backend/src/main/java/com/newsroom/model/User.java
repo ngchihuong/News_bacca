@@ -42,6 +42,9 @@ public class User {
 
     private boolean active = false;
 
+    @Field(name = "refresh_token")
+    private String refreshToken;
+
     @CreatedDate
     @Field(name = "created_at")
     private Instant createdAt;
