@@ -35,9 +35,6 @@ public class Category {
 
     private String description;
 
-    private String slug;
-
-    private Boolean active;
     @CreatedDate
     @Field(name = "created_at")
     private Instant createdAt;

@@ -2,7 +2,6 @@ package com.newsroom.controller;
 
 import com.newsroom.commons.Constants;
 import com.newsroom.config.exceptions.NewsCommonException;
-import com.newsroom.dto.NewsDTO;
 import com.newsroom.dto.TagDTO;
 import com.newsroom.service.ITagService;
 import com.newsroom.config.exceptions.GlobalExceptionHandler;
