@@ -48,7 +48,11 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/",
                                 ApiPrefixConstants.API_MAPPING_PREFIX + "/auth/login",
-                                ApiPrefixConstants.API_MAPPING_PREFIX +"/auth/register"
+                                ApiPrefixConstants.API_MAPPING_PREFIX +"/auth/register",
+                                ApiPrefixConstants.API_MAPPING_PREFIX +"/auth/register",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/api-docs/**"
                                 ).permitAll()
                         .requestMatchers(ApiPrefixConstants.API_MAPPING_PREFIX + "/admin/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()

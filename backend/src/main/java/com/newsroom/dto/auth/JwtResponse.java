@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseCookie;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor

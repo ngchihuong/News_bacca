@@ -25,7 +25,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(ApiPrefixConstants.API_MAPPING_PREFIX + "/auth")
+@RequestMapping(ApiPrefixConstants.API_MAPPING_PREFIX +"/auth")
 public class AuthController {
     private final IAuthService authService;
 
