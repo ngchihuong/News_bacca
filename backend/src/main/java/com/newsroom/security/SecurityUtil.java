@@ -41,7 +41,7 @@ public class SecurityUtil {
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(email)
-                .claim("authority", dto.getRoles())
+                .claim("authority", dto.getRole())
                 .claim("user", dto)
                 .build();
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
@@ -63,7 +63,7 @@ public class SecurityUtil {
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(email)
-                .claim("authority", dto.getRoles())
+                .claim("authority", dto.getRole())
                 .claim("user", userToken)
                 .build();
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();

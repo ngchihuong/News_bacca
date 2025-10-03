@@ -80,6 +80,7 @@ public class Constants {
             public static final String UPDATE_STATUS = "error.user.update_status";
             public static final String EXIST = "error.user.exist";
             public static final String NOT_EXIST = "error.user.not_exist";
+            public static final String INVALID_CREDENTIAL = "error.user.invalid_credential";
             public static final String CODE_BLANK = "error.user.code_blank";
             public static final String IDENTIFICATION_BLANK = "error.user.identification_blank";
         }
