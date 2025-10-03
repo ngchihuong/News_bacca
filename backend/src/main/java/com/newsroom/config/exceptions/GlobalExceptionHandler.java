@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
                 .body(
                         BaseOutput.builder()
                                 .errors(List.of(e.getMessage()))
-                                .statusCode(ResponseStatus.FAILED)
+                                .status(ResponseStatus.FAILED)
                                 .build()
                 );
     }
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
                 .body(
                         BaseOutput.builder()
                                 .errors(List.of(e.getMessage()))
-                                .statusCode(ResponseStatus.FAILED)
+                                .status(ResponseStatus.FAILED)
                                 .build()
                 );
     }
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
                 .body(
                         BaseOutput.builder()
                                 .errors(List.of(e.getMessage()))
-                                .statusCode(ResponseStatus.FAILED)
+                                .status(ResponseStatus.FAILED)
                                 .build()
                 );
     }
@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
                                                         ObjectError::getDefaultMessage)
                                                 .toList()
                                 )
-                                .statusCode(ResponseStatus.FAILED)
+                                .status(ResponseStatus.FAILED)
                                 .build()
                 );
     }
@@ -79,7 +79,7 @@ public class GlobalExceptionHandler {
                 .body(
                         BaseOutput.builder()
                                 .errors(List.of(ex.getMessage()))
-                                .statusCode(ResponseStatus.FAILED)
+                                .status(ResponseStatus.FAILED)
                                 .build()
                 );
     }
@@ -91,7 +91,7 @@ public class GlobalExceptionHandler {
                 .body(
                         BaseOutput.builder()
                                 .errors(List.of(e.getMessage()))
-                                .statusCode(ResponseStatus.FAILED)
+                                .status(ResponseStatus.FAILED)
                                 .build());
     }
 
@@ -102,7 +102,7 @@ public class GlobalExceptionHandler {
                 .body(
                         BaseOutput.builder()
                                 .errors(List.of(ex.getMessage()))
-                                .statusCode(ResponseStatus.FAILED)
+                                .status(ResponseStatus.FAILED)
                                 .build()
                 );
     }
@@ -124,7 +124,7 @@ public class GlobalExceptionHandler {
                                                 .map(ConstraintViolation::getMessage)
                                                 .toList()
                                 )
-                                .statusCode(ResponseStatus.FAILED)
+                                .status(ResponseStatus.FAILED)
                                 .build()
                 );
     }
@@ -135,7 +135,7 @@ public class GlobalExceptionHandler {
                 .body(
                         BaseOutput.builder()
                                 .errors(List.of(ex.getMessage()))
-                                .statusCode(ResponseStatus.FAILED)
+                                .status(ResponseStatus.FAILED)
                                 .build()
                 );
     }

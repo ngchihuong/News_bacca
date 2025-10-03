@@ -1,0 +1,121 @@
+package com.newsroom.service.implement;
+
+import com.newsroom.commons.Constants;
+import com.newsroom.config.exceptions.NewsCommonException;
+import com.newsroom.dto.UserDTO;
+import com.newsroom.dto.auth.JwtResponse;
+import com.newsroom.dto.auth.LoginRequest;
+import com.newsroom.model.User;
+import com.newsroom.repository.UserRepository;
+import com.newsroom.service.auth.IAuthService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+
+@Service
+@RequiredArgsConstructor
+public class AuthServiceImpl implements IAuthService {
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public JwtResponse login(LoginRequest request) {
+        return null;
+    }
+
+    @Override
+    public UserDTO register(User user) {
+        boolean existUser = this.userRepository.existsByEmail(user.getEmail());
+        if (existUser) {
+            throw new NewsCommonException(Constants.ERROR.USER.EXIST);
+        }
+        User newUser = new User();
+        newUser.setUsername(user.getUsername());
+        newUser.setFullName(user.getFullName());
+        newUser.setEmail(user.getEmail());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setPhone(user.getPhone() == null ? "" : user.getPhone());
+        newUser.setAge(user.getAge() == null ? null : user.getAge());
+        newUser.setRole(user.getRole());
+        newUser.setActive(true);
+        newUser.setAvatarUrl(user.getAvatarUrl() == null ? "" : user.getAvatarUrl());
+        newUser.setCreatedAt(Instant.now());
+        newUser.setUpdatedAt(Instant.now());
+        this.userRepository.save(newUser);
+
+        return this.convertUserToDTO(newUser);
+    }
+
+    private UserDTO convertUserToDTO(User user) {
+        return UserDTO.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .roles(user.getRole())
+                .age(user.getAge())
+                .avatarUrl(user.getAvatarUrl())
+                .build();
+    }
+
+//    private final UserRepository userRepository;
+//    private final PasswordEncoder passwordEncoder;
+//    private final JwtTokenProvider tokenProvider;
+//    private final AuthenticationManager authenticationManager;
+//
+//    @Override
+//    @Transactional
+//    public AuthResponse login(AuthRequest request) {
+//        Authentication authentication = authenticationManager.authenticate(
+//            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+//        );
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        String token = tokenProvider.generateToken(authentication);
+//
+//        User user = userRepository.findByUsername(request.getUsername())
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//
+//        AuthResponse response = new AuthResponse();
+//        response.setToken(token);
+//        response.setType("Bearer");
+//        response.setUsername(user.getUsername());
+//        response.setEmail(user.getEmail());
+////        response.setRole(user.getRole());
+//
+//        return response;
+//    }
+//
+//    @Override
+//    @Transactional
+//    public User register(RegisterRequest request) {
+//        if (userRepository.existsByUsername(request.getUsername())) {
+//            throw new RuntimeException("Username already exists");
+//        }
+//
+//        if (userRepository.existsByEmail(request.getEmail())) {
+//            throw new RuntimeException("Email already exists");
+//        }
+//
+//        User user = new User();
+//        user.setUsername(request.getUsername());
+//        user.setEmail(request.getEmail());
+//        user.setPassword(passwordEncoder.encode(request.getPassword()));
+//        user.setFullName(request.getFullName());
+////        user.setRole("USER"); // Default role
+//        user.setActive(true);
+//
+//        return userRepository.save(user);
+//    }
+//
+//    @Override
+//    public User getCurrentUser() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String username = authentication.getName();
+//        return userRepository.findByUsername(username)
+//                .orElseThrow(() -> new RuntimeException("Current user not found"));
+//    }
+}
+
