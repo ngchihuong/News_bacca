@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Document(collection = "users")
 @Data
@@ -39,6 +40,9 @@ public class User {
 
     @Field(name = "avatar_url")
     private String avatarUrl;
+
+    private List<Role> roles;
+
     private boolean active = false;
 
     @CreatedDate

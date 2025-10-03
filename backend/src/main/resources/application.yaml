@@ -28,7 +28,6 @@ app:
     secret: vSEjy7qQU+ZJLv4efKkWnaPBR5PePmWwdHBXAF5MJE9GwYmTl9/fwgHfUhExSL0gRB3JGlhR6F6sf25j5FkdPQ==
     expiration-access-token: 600
     expiration-refresh-token: 86400000
-    expiration: 1
   cors:
     allowed-origins: "http://localhost:3000"
   base-url: "http://localhost:8080"

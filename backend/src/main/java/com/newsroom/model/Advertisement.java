@@ -1,71 +1,85 @@
 package com.newsroom.model;
 
+import com.newsroom.enums.AdFormat;
+import com.newsroom.enums.AdType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Document(collection = "advertisements")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Advertisement {
-    @Id
+    
+    @MongoId
     private String id;
     
     private String title;
+    
     private String description;
-    
-    // Ad Type: BANNER, SIDEBAR, IN_FEED, POPUP
-    private String adType;
-    
-    // Position: TOP, SIDEBAR_TOP, SIDEBAR_MIDDLE, SIDEBAR_BOTTOM, IN_FEED, FOOTER
-    @Indexed
+
+    @Field(name = "ad_type")
+    private AdType adType;
+
     private String position;
     
-    // Ad Format: IMAGE, HTML, SCRIPT (for Google Ads, FB Ads)
-    private String format;
+    private AdFormat format;
     
-    // Content based on format
-    private String imageUrl;      // For IMAGE format
-    private String htmlContent;   // For HTML format
-    private String scriptCode;    // For SCRIPT format (Google Ads, FB Ads)
+    @Field(name = "image_url")
+    private String imageUrl;
     
-    private String targetUrl;     // Click destination
-    private boolean openInNewTab = true;
+    @Field(name = "html_content")
+    private String htmlContent;
     
-    // Dimensions
-    private String width;         // e.g., "300px", "100%"
-    private String height;        // e.g., "250px", "auto"
+    @Field(name = "script_code")
+    private String scriptCode;
     
-    // Scheduling
+    @Field(name = "target_url")
+    private String targetUrl;
+    
+    @Field(name = "open_in_new_tab")
+    private Boolean openInNewTab = true;
+    
+    private String width;
+    
+    private String height;
+    
+    @Field(name = "start_date")
     private LocalDateTime startDate;
+    
+    @Field(name = "end_date")
     private LocalDateTime endDate;
     
-    // Status
-    private boolean active = true;
+    private Boolean active = true;
     
-    // Priority (higher number = higher priority)
-    private int priority = 0;
+    private Integer priority = 0;
     
-    // Tracking
-    private long impressions = 0;
-    private long clicks = 0;
+    private Long impressions = 0L;
     
-    // Display Settings
-    private int displayFrequency = 1; // Show every X page views
-    private int maxDailyImpressions = 0; // 0 = unlimited
+    private Long clicks = 0L;
     
-    @CreatedDate
-    private LocalDateTime createdAt;
+    @Field(name = "display_frequency")
+    private Integer displayFrequency = 1; //tần suất hiển thị
     
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-}
+    @Field(name = "max_daily_impressions")
+    private Integer maxDailyImpressions = 0; //số lần hiển thị tối đa hàng ngày
 
+    @CreatedDate
+    @Field(name = "created_at")
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Field(name = "updated_at")
+    private Instant updatedAt;
+}
