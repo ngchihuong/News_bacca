@@ -22,7 +22,7 @@ public class BaseOutput<T> {
     List<String> errors;
     String message;
     Meta meta;
-    ResponseStatus statusCode;
+    ResponseStatus status;
     T data;
 
     @Data
