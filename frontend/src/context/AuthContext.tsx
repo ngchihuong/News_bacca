@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Load from localStorage on mount
-    const storedToken = localStorage.getItem('token');
+    const storedToken = localStorage.getItem('access_token');
     const storedUser = localStorage.getItem('user');
     
     if (storedToken && storedUser) {
@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setToken(newToken);
       setUser({ username: userName, email, role });
       
-      localStorage.setItem('token', newToken);
+      localStorage.setItem('access_token', newToken);
       localStorage.setItem('user', JSON.stringify({ username: userName, email, role }));
       
       api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
@@ -60,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem('token');
+    localStorage.removeItem('access_token');
     localStorage.removeItem('user');
     delete api.defaults.headers.common['Authorization'];
     router.push('/admin/login');
