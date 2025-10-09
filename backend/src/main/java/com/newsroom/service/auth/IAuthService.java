@@ -13,5 +13,6 @@ public interface IAuthService {
 
     void logout();
 
+    JwtResponse getRefreshToken(String refreshToken);
 }
 
