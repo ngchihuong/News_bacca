@@ -1,19 +1,120 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { categoryApi } from '@/lib/api';
-import { Category } from '@/types';
+import Link from "next/link";
+import { useState, useEffect, useRef, use } from "react";
+import { categoryApi } from "@/lib/api";
+import { Category } from "@/types";
+import { IoReorderThree } from "react-icons/io5";
 
 export default function Header() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const toggle = () => setIsMenuOpen(!isMenuOpen);
+
   useEffect(() => {
-    categoryApi.getActive().then((res) => {
-      setCategories(res.data || []);
-    }).catch(console.error);
+    categoryApi
+      .getActive()
+      .then((res) => {
+        setCategories(res.data || []);
+      })
+      .catch(console.error);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const dropMenu = () => {
+    return (
+      <div ref={dropdownRef} className="relative">
+        {/* Nút menu */}
+        <button
+          onClick={toggle}
+          className={`flex items-center justify-center h-12 w-12`}
+        >
+          <IoReorderThree className="flex w-full h-full" />
+        </button>
+
+        {/* Dropdown */}
+        {isMenuOpen && (
+          <div className="absolute right-0 mt-2 bg-white shadow-md rounded-md w-48 p-2 divide-y divide-gray-200">
+            {/* IsLogged In */}
+            <div className="px-4 py-3 text-sm text-gray-900">
+              <div>Bonnie Green</div>
+              <div className="font-medium truncate">name@flowbite.com</div>
+            </div>
+            <ul
+              className="py-2 text-sm text-gray-900"
+              aria-labelledby="dropdownUserAvatarButton"
+            >
+              <li>
+                <a
+                  href="#"
+                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Dashboard
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Settings
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Earnings
+                </a>
+              </li>
+            </ul>
+            <div className="py-2">
+              <a
+                href="#"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white"
+              >
+                Sign out
+              </a>
+            </div>
+            {/* IsLogged In */}
+            {/* Not Logged In */}
+            <div className="py-2">
+              <a
+                href="#"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white"
+              >
+                Sign-in
+              </a>
+            </div>
+            {/* <div className="py-2">
+              <a
+                href="#"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white"
+              >
+                Register
+              </a>
+            </div> */}
+            {/* Not Logged In */}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <header className="bg-white shadow-md">
@@ -30,11 +131,11 @@ export default function Header() {
               </span>
             </div>
             <div className="text-sm text-gray-600 hidden md:block">
-              {new Date().toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
+              {new Date().toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
               })}
             </div>
           </div>
@@ -83,27 +184,32 @@ export default function Header() {
                 Contact
               </Link>
             </div>
-            <div className="flex items-center">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:border-primary"
-              />
-              <button className="bg-primary text-white px-4 py-2 rounded-r-md hover:bg-primary/90 transition-colors">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </button>
+            <div className="flex items-center space-x-4">
+              <div className="hidden md:flex md:items-center">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="px-4 py-2 h-full border border-gray-300 rounded-l-md focus:outline-none focus:border-primary"
+                />
+                <button className="bg-primary h-full text-white px-4 py-2 rounded-r-md hover:bg-primary/90 transition-colors">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </button>
+              </div>
+              {/* Dropdown Menu Open */}
+              {dropMenu()}
+              {/* Dropdown Menu Open */}
             </div>
           </div>
         </div>
@@ -111,4 +217,3 @@ export default function Header() {
     </header>
   );
 }
-

@@ -19,7 +19,8 @@ const handleRefreshToken = async (): Promise<string | null> => {
   return await mutex.runExclusive(async () => {
     const res = await instance.get<BaseOutput<AuthResponse>>("/auth/refresh");
     if (res && res.data) {
-      return res.data.data.access_token;
+      // return res.data.data.access_token;
+      return res.data.data.access_token ?? null;
     } else {
       return null;
     }
@@ -53,8 +54,8 @@ instance.interceptors.response.use(
     if (
       error.config &&
       error.response &&
-      // && +error.response.status === 401
-      error.errors === "Bad credentials" &&
+      +error.response.status === 401 &&
+      // error.errors === "Bad credentials" &&
       error.response.status === "FAILED" &&
       error.config.url !== "/auth/login" &&
       !error.config.headers[NO_RETRY_HEADER]
@@ -70,7 +71,8 @@ instance.interceptors.response.use(
         error.config &&
         error.response &&
         error.response.status === "FAILED" &&
-        error.errors === "Bad Request" &&
+        +error.errors === 400 &&
+        // error.errors === "Bad Request" &&
         error.config.url === "/auth/refresh" &&
         location.pathname.startsWith("/admin")
       ) {

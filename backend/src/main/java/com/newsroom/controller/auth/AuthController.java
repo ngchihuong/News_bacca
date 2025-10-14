@@ -120,4 +120,18 @@ public class AuthController {
                                 .build()
                 );
     }
+
+    @GetMapping("/account")
+    public ResponseEntity<BaseOutput<?>> getAccount() {
+        JwtResponse.UserLogin user = this.authService.getAccount();
+
+        return ResponseEntity.ok()
+                .body(
+                        BaseOutput.builder()
+                                .status(ResponseStatus.SUCCESS)
+                                .message(HttpStatus.OK.toString())
+                                .data(user)
+                                .build()
+                );
+    }
 }
