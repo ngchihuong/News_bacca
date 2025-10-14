@@ -12,6 +12,7 @@ export interface UserLogin {
   role?: string;
 }
 export interface AuthResponse {
-  user: UserLogin;
-  access_token: string;
+  user?: UserLogin;
+  responseCookie?: string;
+  access_token?: string;
 }

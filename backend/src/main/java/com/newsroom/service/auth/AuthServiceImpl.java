@@ -159,6 +159,24 @@ public class AuthServiceImpl implements IAuthService {
         return res;
     }
 
+    @Override
+    public JwtResponse.UserLogin getAccount() {
+        String email = SecurityUtil.getCurrentUserLogin().isPresent()
+                ? SecurityUtil.getCurrentUserLogin().get() : "";
+
+        User currentUserDb = this.userRepository.findByEmail(email);
+        JwtResponse.UserLogin.UserLoginBuilder userLogin
+                = JwtResponse.UserLogin.builder();
+
+        if (currentUserDb != null) {
+            userLogin.type("Bearer ");
+            userLogin.id(currentUserDb.getId());
+            userLogin.name(currentUserDb.getUsername());
+            userLogin.role(currentUserDb.getRole());
+        }
+        return userLogin.build();
+    }
+
     public User getUserByRefreshTokenAndEmail(String token, String email) {
         return this.userRepository.findByRefreshTokenAndEmail(token, email);
     }
