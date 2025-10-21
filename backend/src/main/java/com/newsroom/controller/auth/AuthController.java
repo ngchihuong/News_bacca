@@ -109,7 +109,6 @@ public class AuthController {
             throw new NewsCommonException(Constants.ERROR.REQUEST.INVALID_PATH_VARIABLE_ID);
         }
         JwtResponse response = this.authService.getRefreshToken(refreshToken);
-
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, response.getResponseCookie().toString())
                 .body(

@@ -1,14 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef, use } from "react";
+import { useState, useEffect, useRef } from "react";
 import { categoryApi } from "@/lib/api";
 import { Category } from "@/types";
 import { IoReorderThree } from "react-icons/io5";
+import { useAppContext } from "@/context/AuthContext";
 
 export default function Header() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { user, isAuthenticated } = useAppContext();
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const toggle = () => setIsMenuOpen(!isMenuOpen);
@@ -49,59 +52,64 @@ export default function Header() {
         {/* Dropdown */}
         {isMenuOpen && (
           <div className="absolute right-0 mt-2 bg-white shadow-md rounded-md w-48 p-2 divide-y divide-gray-200">
-            {/* IsLogged In */}
-            <div className="px-4 py-3 text-sm text-gray-900">
-              <div>Bonnie Green</div>
-              <div className="font-medium truncate">name@flowbite.com</div>
-            </div>
-            <ul
-              className="py-2 text-sm text-gray-900"
-              aria-labelledby="dropdownUserAvatarButton"
-            >
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+            {isAuthenticated == true && user != null ? (
+              <>
+                {/* IsLogged In */}
+                <div className="px-4 py-3 text-sm text-gray-900">
+                  <div>Bonnie Green</div>
+                  <div className="font-medium truncate">name@flowbite.com</div>
+                </div>
+                <ul
+                  className="py-2 text-sm text-gray-900"
+                  aria-labelledby="dropdownUserAvatarButton"
                 >
-                  Dashboard
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Settings
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Earnings
-                </a>
-              </li>
-            </ul>
-            <div className="py-2">
-              <a
-                href="#"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white"
-              >
-                Sign out
-              </a>
-            </div>
-            {/* IsLogged In */}
-            {/* Not Logged In */}
-            <div className="py-2">
-              <a
-                href="#"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white"
-              >
-                Sign-in
-              </a>
-            </div>
-            {/* <div className="py-2">
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Dashboard
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Settings
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Earnings
+                    </a>
+                  </li>
+                </ul>
+                <div className="py-2">
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white"
+                  >
+                    Sign out
+                  </a>
+                </div>
+                {/* IsLogged In */}
+              </>
+            ) : (
+              <>
+                {/* Not Logged In */}
+                <div className="py-2">
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white"
+                  >
+                    Sign-in
+                  </a>
+                </div>
+                {/* <div className="py-2">
               <a
                 href="#"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white"
@@ -109,7 +117,9 @@ export default function Header() {
                 Register
               </a>
             </div> */}
-            {/* Not Logged In */}
+                {/* Not Logged In */}
+              </>
+            )}
           </div>
         )}
       </div>

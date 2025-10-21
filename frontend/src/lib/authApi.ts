@@ -10,3 +10,6 @@ export const login = (username: string, password: string) => {
     password,
   });
 };
+export const getAccount = () => {
+  return axios.get<BaseOutput<UserLogin>>(`${API_URL}/auth/account`);
+}

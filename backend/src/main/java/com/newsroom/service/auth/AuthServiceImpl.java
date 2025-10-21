@@ -123,7 +123,6 @@ public class AuthServiceImpl implements IAuthService {
     public JwtResponse getRefreshToken(String refreshToken) {
         Jwt decodeToken = this.securityUtil.checkValidRefreshToken(refreshToken);
         String email = decodeToken.getSubject();
-
         User currentUserDb = this.getUserByRefreshTokenAndEmail(refreshToken, email);
         if (currentUserDb == null) {
             throw new NewsCommonException(Constants.ERROR.USER.INVALID_CREDENTIAL);
@@ -132,6 +131,7 @@ public class AuthServiceImpl implements IAuthService {
         JwtResponse res = new JwtResponse();
         if (currentUserDb != null) {
             JwtResponse.UserLogin userLogin = JwtResponse.UserLogin.builder()
+                    .type("Bearer ")
                     .id(currentUserDb.getId())
                     .name(currentUserDb.getUsername())
                     .role(currentUserDb.getRole())
@@ -192,14 +192,5 @@ public class AuthServiceImpl implements IAuthService {
                 .avatarUrl(user.getAvatarUrl())
                 .build();
     }
-
-//
-//    @Override
-//    public User getCurrentUser() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String username = authentication.getName();
-//        return userRepository.findByUsername(username)
-//                .orElseThrow(() -> new RuntimeException("Current user not found"));
-//    }
 }
 
