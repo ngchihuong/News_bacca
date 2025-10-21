@@ -48,23 +48,22 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/",
                                 ApiPrefixConstants.API_MAPPING_PREFIX + "/auth/login",
-                                ApiPrefixConstants.API_MAPPING_PREFIX +"/auth/register",
-                                ApiPrefixConstants.API_MAPPING_PREFIX +"/auth/register",
-                                ApiPrefixConstants.API_MAPPING_PREFIX +"/categories/**",
+                                ApiPrefixConstants.API_MAPPING_PREFIX + "/auth/refresh",
+                                ApiPrefixConstants.API_MAPPING_PREFIX + "/auth/register",
+                                ApiPrefixConstants.API_MAPPING_PREFIX + "/categories/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/api-docs/**"
-                                ).permitAll()
+                        ).permitAll()
                         .requestMatchers(ApiPrefixConstants.API_MAPPING_PREFIX + "/admin/**").hasAnyRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                        .authenticationEntryPoint(authenticationEntryPoint)
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(FormLoginConfigurer::disable);
-
         return http.build();
     }
 

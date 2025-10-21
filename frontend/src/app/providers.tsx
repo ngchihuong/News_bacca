@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthProvider } from "@/context/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { App, ConfigProvider } from "antd";
@@ -12,10 +13,12 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ConfigProvider locale={enUS}>
-        <App>{children}</App>
-      </ConfigProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      <AuthProvider>
+        <ConfigProvider locale={enUS}>
+          <App>{children}</App>
+        </ConfigProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

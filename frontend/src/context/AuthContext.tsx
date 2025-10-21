@@ -1,86 +1,62 @@
-'use client';
+"use client";
 
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import api from '@/lib/api';
+import React, { createContext, useState, useContext, useEffect } from "react";
+import * as api from "@/lib/authApi";
+import {  useQuery } from "@tanstack/react-query";
+import { UserLogin } from "@/types/backend";
 
 interface User {
+  id: string;
+  type: string;
   username: string;
-  email: string;
   role: string;
 }
 
-interface AuthContextType {
-  user: User | null;
-  token: string | null;
-  login: (username: string, password: string) => Promise<void>;
-  logout: () => void;
+interface AuthContext {
   isAuthenticated: boolean;
+  setIsAuthenticated: (v: boolean) => void;
   isAdmin: boolean;
+  setIsAdmin: (v: boolean) => void;
+  user: UserLogin | null;
+  setUser: (v: UserLogin | null) => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContext | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const router = useRouter();
+  const [user, setUser] = useState<UserLogin | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["account"],
+    queryFn: api.getAccount,
+  });
   useEffect(() => {
-    // Load from localStorage on mount
-    const storedToken = localStorage.getItem('access_token');
-    const storedUser = localStorage.getItem('user');
-    
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-      api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+    if (data?.data?.data) {
+      setUser(data.data.data);
+      setIsAuthenticated(true);
+      if (data.data.data.role === "admin") {
+        setIsAdmin(true);
+      }else {
+        setIsAdmin(false);
+      }
+    } else if (error) {
+      setUser(null);
+      setIsAuthenticated(false);
+      setIsAdmin(false);
     }
-  }, []);
-
-  const login = async (username: string, password: string) => {
-    try {
-      const response = await api.post('/auth/login', { username, password });
-      const { token: newToken, username: userName, email, role } = response.data;
-      
-      setToken(newToken);
-      setUser({ username: userName, email, role });
-      
-      localStorage.setItem('access_token', newToken);
-      localStorage.setItem('user', JSON.stringify({ username: userName, email, role }));
-      
-      api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-      
-      router.push('/admin/dashboard');
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Login failed');
-    }
-  };
-
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user');
-    delete api.defaults.headers.common['Authorization'];
-    router.push('/admin/login');
-  };
-
-  const isAuthenticated = !!token && !!user;
-  const isAdmin = user?.role === 'ADMIN' || user?.role === 'AUTHOR';
-
+  }, [data, error]);
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isAuthenticated, isAdmin }}>
+    <AuthContext.Provider
+      value={{ user,setUser, isAuthenticated,setIsAuthenticated, isAdmin, setIsAdmin }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
 
-export function useAuth() {
+export function useAppContext() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  return context as AuthContext;
 }
-

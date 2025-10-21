@@ -8,6 +8,8 @@ import { IoWarningOutline } from "react-icons/io5";
 import { useState } from "react";
 import * as authApiClient from "@/lib/authApi";
 import { AuthResponse, BaseOutput } from "@/types/backend";
+import { useAppContext } from "@/context/AuthContext";
+import { set } from "date-fns";
 
 type LoginFormData = {
   username: string;
@@ -18,7 +20,8 @@ export default function login() {
   const queryClient = new QueryClient();
   const router = useRouter();
   const { notification } = App.useApp();
-
+  const {setUser, setIsAuthenticated, setIsAdmin} = useAppContext();
+  
   const {
     register,
     handleSubmit,
@@ -35,11 +38,17 @@ export default function login() {
         placement: "topRight",
       });
       if (data.data) {
+        setUser(data.data.user);
+        setIsAuthenticated(true);
+
         localStorage.setItem("access_token", data!.data!.access_token!);
+        localStorage.setItem("user", JSON.stringify(data!.data!.user!));
       }
       const role = data?.data?.user?.role;
-      if (role === "admin") router.push("/admin");
-      else router.push("/");
+      if (role === "ADMIN") {
+        setIsAdmin(true);
+        router.push("/admin");
+      }else router.push("/");
 
       queryClient.clear();
     },
