@@ -4,6 +4,8 @@ import com.newsroom.commons.ApiPrefixConstants;
 import com.newsroom.security.SecurityUtil;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
+import io.minio.MinioClient;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,10 +31,13 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfiguration {
 
     @Value("${app.jwt.secret}")
     private String jwtKey;
+
+    private final MinioConfig minioConfig;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,7 +45,15 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationEntryPoint caep, AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
+    public MinioClient minioClient() {
+        return MinioClient.builder()
+                .endpoint(minioConfig.getEndpoint())
+                .credentials(minioConfig.getUsername(), minioConfig.getPassword())
+                .build();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())

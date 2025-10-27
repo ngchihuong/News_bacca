@@ -1,6 +1,16 @@
 package com.newsroom.commons;
 
 public class Constants {
+    public static class FILE {
+        public static final String THUMBNAIL_NAME_PREFIX = "thumbnail_";
+
+        public static class FILE_SIZE_UNIT {
+            public static final String BYTE = "Byte";
+            public static final String KB = "KB";
+            public static final String MB = "MB";
+            public static final String GB = "GB";
+        }
+    }
     public static final class ERROR {
         public static final class REQUEST {
             public static final String INVALID_PATH_VARIABLE
@@ -112,6 +122,34 @@ public class Constants {
             public static final String EXIST = "error.service_fee.exist";
             public static final String NOT_EXIST = "error.service_fee.not_exist";
             public static final String EXCEED_ALLOWABLE = "error.service_fee.exceed_the_allowable_limit";
+        }
+        public static class FILE {
+            public static final String DELETE = "error.file.delete";
+            public static final String CREATE = "error.file.create";
+            public static final String UPDATE = "error.file.update";
+            public static final String EXIST = "error.file.exist";
+            public static final String NOT_EXIST = "error.file.not_exist";
+            public static final String SAVE_TO_DB = "error.file.save_to_db";
+            public static final String SAVE_TO_SOURCE = "error.file.save_to_source";
+            public static final String DOWNLOAD = "error.file.download";
+            public static final String ZIP = "error.file.zip";
+            public static final String CORRUPTED = "error.file.corrupted";
+            public static final String EMPTY = "error.file.empty";
+            public static final String MOVE = "error.file.move";
+        }
+
+        public static class MINIO {
+            public static final String INVALID_KEY = "error.minio.invalid_key";
+            public static final String FILE_ALREADY_EXISTS = "error.minio.file_already_exists";
+            public static final String RESPONSE = "error.minio.response";
+            public static final String INSUFFICIENT_DATA = "error.minio.insufficient_data";
+            public static final String INTERNAL_EXCEPTION = "error.minio.internal_exception";
+            public static final String INVALID_RESPONSE = "error.minio.invalid_response";
+            public static final String IO = "error.minio.io";
+            public static final String NO_SUCH_ALGORITHM = "error.minio.no_such_algorithm";
+            public static final String SERVER = "error.minio.server";
+            public static final String XML_PARSER = "error.minio.xml_parser";
+            public static final String EXTERNAL = "error.minio.external";
         }
     }
 }
