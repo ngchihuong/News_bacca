@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+import { useAppContext } from '@/context/AuthContext';
 import { 
   FaHome, 
   FaNewspaper, 
@@ -16,7 +16,7 @@ import {
 
 export default function AdminNav() {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const { user, logout } = useAppContext();
 
   const navItems = [
     { href: '/admin/dashboard', label: 'Dashboard', icon: FaChartBar },

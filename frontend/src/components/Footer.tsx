@@ -1,105 +1,57 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { FaFacebook, FaTwitter, FaLinkedin, FaInstagram, FaYoutube } from 'react-icons/fa';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { AiOutlineFire, AiOutlineHome, AiOutlinePlus } from "react-icons/ai";
+import { PiVideoLight } from "react-icons/pi";
+import { IoPersonOutline } from "react-icons/io5";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  const links = [
+    { href: "/", icon: <AiOutlineHome />, label: "Home" },
+    { href: "/trending", icon: <AiOutlineFire />, label: "Trending" },
+    { href: "/create", icon: <AiOutlinePlus />, label: "Create" },
+    { href: "/watch", icon: <PiVideoLight />, label: "Watch" },
+    { href: "/profile", icon: <IoPersonOutline />, label: "Profile" },
+  ];
+
   return (
-    <footer className="bg-gray-100 pt-12 pb-6 mt-12">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          {/* About */}
-          <div>
-            <Link href="/" className="text-2xl font-bold mb-4 inline-block">
-              <span className="text-primary">News</span>
-              <span className="text-secondary">Room</span>
+    <div className="fixed bottom-0 left-0 right-0">
+      {/* Footer desktop */}
+      <footer className="hidden md:block bg-gray-100 pt-1 pb-1">
+        <p className="text-center text-gray-600">
+          © {new Date().getFullYear()} <span className="font-bold">Cacbac</span>
+          . All Rights Reserved.
+        </p>
+      </footer>
+
+      {/* Footer mobile */}
+      <nav
+        className="flex md:hidden bg-gray-100 border-t border-[#e0e0e0] py-2 px-0 z-10 
+        shadow-[0px_-2px_10px_rgba(0,0,0,0.05)]"
+      >
+        {links.map((link: any) => {
+          const isActive = pathname === link.href;
+
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`flex-1 flex flex-col items-center justify-center py-2 px-1 gap-1 transition-colors duration-200 
+                ${
+                  isActive
+                    ? "text-red-600 bg-gray-200 font-semibold"
+                    : "text-[#767676] hover:text-[#111]"
+                }`}
+            >
+              <span className="text-lg md:text-xl">{link.icon}</span>
+              <span className="text-xs md:text-sm">{link.label}</span>
             </Link>
-            <p className="text-gray-600 mb-4">
-              Your trusted source for the latest news and updates from around the world.
-              Stay informed with comprehensive coverage of technology, business, sports, and more.
-            </p>
-            <div className="flex space-x-2">
-              <a href="#" className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-primary hover:text-white hover:border-primary transition-colors">
-                <FaTwitter />
-              </a>
-              <a href="#" className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-primary hover:text-white hover:border-primary transition-colors">
-                <FaFacebook />
-              </a>
-              <a href="#" className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-primary hover:text-white hover:border-primary transition-colors">
-                <FaLinkedin />
-              </a>
-              <a href="#" className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-primary hover:text-white hover:border-primary transition-colors">
-                <FaInstagram />
-              </a>
-              <a href="#" className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-primary hover:text-white hover:border-primary transition-colors">
-                <FaYoutube />
-              </a>
-            </div>
-          </div>
-
-          {/* Categories */}
-          <div>
-            <h4 className="text-lg font-bold mb-4">Categories</h4>
-            <div className="flex flex-wrap gap-2">
-              {['Politics', 'Business', 'Technology', 'Sports', 'Health', 'Education', 'Science', 'Entertainment'].map((cat) => (
-                <Link
-                  key={cat}
-                  href={`/category/${cat.toLowerCase()}`}
-                  className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-primary hover:text-white hover:border-primary transition-colors"
-                >
-                  {cat}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Tags */}
-          <div>
-            <h4 className="text-lg font-bold mb-4">Popular Tags</h4>
-            <div className="flex flex-wrap gap-2">
-              {['Breaking', 'Trending', 'Featured', 'Analysis', 'Opinion', 'Interview'].map((tag) => (
-                <Link
-                  key={tag}
-                  href={`/tag/${tag.toLowerCase()}`}
-                  className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-primary hover:text-white hover:border-primary transition-colors"
-                >
-                  {tag}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-lg font-bold mb-4">Quick Links</h4>
-            <div className="space-y-2">
-              <Link href="/about" className="block text-gray-600 hover:text-primary transition-colors">
-                → About Us
-              </Link>
-              <Link href="/advertise" className="block text-gray-600 hover:text-primary transition-colors">
-                → Advertise
-              </Link>
-              <Link href="/privacy" className="block text-gray-600 hover:text-primary transition-colors">
-                → Privacy Policy
-              </Link>
-              <Link href="/terms" className="block text-gray-600 hover:text-primary transition-colors">
-                → Terms & Conditions
-              </Link>
-              <Link href="/contact" className="block text-gray-600 hover:text-primary transition-colors">
-                → Contact
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Copyright */}
-        <div className="border-t border-gray-300 pt-6">
-          <p className="text-center text-gray-600">
-            © {new Date().getFullYear()} <span className="font-bold">NewsRoom</span>. All Rights Reserved.
-          </p>
-        </div>
-      </div>
-    </footer>
+          );
+        })}
+      </nav>
+    </div>
   );
 }
-

@@ -1,229 +1,97 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
-import { categoryApi } from "@/lib/api";
-import { Category } from "@/types";
-import { IoReorderThree } from "react-icons/io5";
-import { useAppContext } from "@/context/AuthContext";
+import { FaPencilAlt, FaSearch } from "react-icons/fa";
+import MobilePanel from "./mobile/MobilePanel";
+import MobileSearch from "./mobile/MobileSearch";
+import DropdownMenu from "./DropdownMenu";
 
 export default function Header() {
-  const [categories, setCategories] = useState<Category[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const { user, isAuthenticated } = useAppContext();
-
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const toggle = () => setIsMenuOpen(!isMenuOpen);
-
-  useEffect(() => {
-    categoryApi
-      .getActive()
-      .then((res) => {
-        setCategories(res.data || []);
-      })
-      .catch(console.error);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const dropMenu = () => {
-    return (
-      <div ref={dropdownRef} className="relative">
-        {/* Nút menu */}
-        <button
-          onClick={toggle}
-          className={`flex items-center justify-center h-12 w-12`}
-        >
-          <IoReorderThree className="flex w-full h-full" />
-        </button>
-
-        {/* Dropdown */}
-        {isMenuOpen && (
-          <div className="absolute right-0 mt-2 bg-white shadow-md rounded-md w-48 p-2 divide-y divide-gray-200">
-            {isAuthenticated == true && user != null ? (
-              <>
-                {/* IsLogged In */}
-                <div className="px-4 py-3 text-sm text-gray-900">
-                  <div>Bonnie Green</div>
-                  <div className="font-medium truncate">name@flowbite.com</div>
-                </div>
-                <ul
-                  className="py-2 text-sm text-gray-900"
-                  aria-labelledby="dropdownUserAvatarButton"
-                >
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      Dashboard
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      Settings
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      Earnings
-                    </a>
-                  </li>
-                </ul>
-                <div className="py-2">
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white"
-                  >
-                    Sign out
-                  </a>
-                </div>
-                {/* IsLogged In */}
-              </>
-            ) : (
-              <>
-                {/* Not Logged In */}
-                <div className="py-2">
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white"
-                  >
-                    Sign-in
-                  </a>
-                </div>
-                {/* <div className="py-2">
-              <a
-                href="#"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white"
-              >
-                Register
-              </a>
-            </div> */}
-                {/* Not Logged In */}
-              </>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  };
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   return (
-    <header className="bg-white shadow-md">
-      {/* Top Bar */}
-      <div className="bg-gray-100 py-2">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <span className="bg-primary text-white px-4 py-1 text-sm font-semibold">
-                Trending
-              </span>
-              <span className="text-sm text-gray-600 truncate">
-                Latest news from around the world
-              </span>
-            </div>
-            <div className="text-sm text-gray-600 hidden md:block">
-              {new Date().toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
+    <>
+      <header
+        className="fixed top-0 left-0 right-0 h-14 bg-white border-b border-[#e0e0e0]
+    flex justify-between items-center py-0 px-2 z-[200] shadow-sm md:h-20 md:px-3 xs:px-12"
+      >
+        {/* mobile panel */}
+        <MobilePanel />
+        {/* mobile panel */}
 
-      {/* Logo & Ad Bar */}
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex justify-between items-center">
-          <Link href="/" className="text-3xl font-bold">
-            <span className="text-primary">News</span>
-            <span className="text-secondary">Room</span>
+        <div className="flex items-center gap-3 xs:gap-8">
+          <div className="font-bold text-[#e60023] cursor-pointer text-[16px] xs:text-[18px] md:text-2xl">
+            Cacbac
+          </div>
+          <nav className="hidden md:flex gap-2">
+            <Link
+              href="/"
+              className="text-black text-[16px] font-semibold py-3 px-4 rounded-3xl transition-colors duration-200 hover:bg-[#e9e9e9]"
+            >
+              Home
+            </Link>
+            <Link
+              href="/trending"
+              className="text-black text-[16px] font-semibold py-3 px-4 rounded-3xl transition-colors duration-200 hover:bg-[#e9e9e9]"
+            >
+              Trending
+            </Link>
+            <Link
+              href="/following"
+              className="text-black text-[16px] font-semibold py-3 px-4 rounded-3xl transition-colors duration-200 hover:bg-[#e9e9e9]"
+            >
+              Following
+            </Link>
+          </nav>
+        </div>
+        <div className="gap-2 flex items-center xs:gap-4">
+          <div className="hidden md:relative md:block">
+            <input
+              type="text"
+              className="w-72 py-3 px-4 border-none bg-[#efefef] rounded-3xl text-sm outline-none focus:bg-[#e0e0e0]"
+              placeholder="Search news...."
+            />
+          </div>
+          <div
+            className="block md:hidden text-[20px] cursor-pointer p-2 text-black transition-colors duration-200 rounded-lg 
+        hover:bg-[#f0f0f0]"
+            onClick={() => setIsMobileSearchOpen(true)}
+          >
+            <FaSearch className="text-blue-600" />
+          </div>
+          <Link href="/post/create">
+            <button
+              className="hidden md:flex items-center gap-2 bg-[#1877f2] text-white border-none rounded-3xl py-2 px-4 
+          font-semibold cursor-pointer transition-all duration-200 ease-in hover:bg-[#166fe5] transform hover:translate-y-[-1px] hover:shadow-xl"
+            >
+              <span className="text-[16px]">
+                <FaPencilAlt />
+              </span>
+              <span className="text-[14px]">Write</span>
+            </button>
           </Link>
-          <div className="hidden lg:block">
-            <div className="bg-gray-200 px-8 py-4 text-center text-sm text-gray-600">
-              Advertisement 728x90
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Navigation */}
-      <nav className="bg-gray-50 border-t border-gray-200">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-6">
-              <Link
-                href="/"
-                className="py-4 px-2 text-gray-700 hover:text-primary font-medium border-b-2 border-transparent hover:border-primary transition-colors"
-              >
-                Home
-              </Link>
-              {categories.slice(0, 5).map((category) => (
-                <Link
-                  key={category.id}
-                  href={`/category/${category.slug}`}
-                  className="py-4 px-2 text-gray-700 hover:text-primary font-medium border-b-2 border-transparent hover:border-primary transition-colors hidden md:block"
-                >
-                  {category.name}
-                </Link>
-              ))}
-              <Link
-                href="/contact"
-                className="py-4 px-2 text-gray-700 hover:text-primary font-medium border-b-2 border-transparent hover:border-primary transition-colors hidden md:block"
-              >
-                Contact
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="hidden md:flex md:items-center">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="px-4 py-2 h-full border border-gray-300 rounded-l-md focus:outline-none focus:border-primary"
-                />
-                <button className="bg-primary h-full text-white px-4 py-2 rounded-r-md hover:bg-primary/90 transition-colors">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </button>
-              </div>
-              {/* Dropdown Menu Open */}
-              {dropMenu()}
-              {/* Dropdown Menu Open */}
-            </div>
-          </div>
+          {/* Account setting */}
+          <DropdownMenu isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+          {/* Account setting */}
         </div>
-      </nav>
-    </header>
+      </header>
+      <div
+        className="hidden md:block fixed top-20 left-0 w-60 h-[calc(100vh-7rem)] bg-white border-r border-[#e0e0e0] 
+      py-1 px-4 overflow-y-auto z-50 scrollbar-hover"
+      >
+        
+      </div>
+      {isMobileSearchOpen == true ? (
+        <MobileSearch
+          isMobileSearchOpen={isMobileSearchOpen}
+          setIsMobileSearchOpen={setIsMobileSearchOpen}
+        />
+      ) : (
+        <></>
+      )}
+    </>
   );
 }

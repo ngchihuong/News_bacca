@@ -1,35 +1,36 @@
-import type { Metadata } from 'next'
-import { Roboto } from 'next/font/google'
-import './globals.css'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
-import Providers from './providers'
+import type { Metadata } from "next";
+import { Roboto } from "next/font/google";
+import "./globals.css";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Providers from "./providers";
 
-const roboto = Roboto({ 
-  weight: ['300', '400', '500', '700', '900'],
-  subsets: ['latin'] 
-})
+const roboto = Roboto({
+  weight: ["300", "400", "500", "700", "900"],
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: 'NewsRoom - Your Daily News Source',
-  description: 'Stay updated with the latest news from around the world',
-}
+  title: "NewsRoom - Your Daily News Source",
+  description: "Stay updated with the latest news from around the world",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
       <body className={roboto.className}>
         <Providers>
-        <Header/>
-        <main>{children}</main>
-        <Footer />
+          <Header />
+          <main className="pt-14 md:pt-20 pb-16 overflow-y-auto min-h-screen bg-white">
+            {children}
+          </main>
+          <Footer />
         </Providers>
       </body>
     </html>
-  )
+  );
 }
-
