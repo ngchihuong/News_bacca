@@ -5,7 +5,7 @@ created: '2026-09-14'
 status: 'done'
 baseline_commit: '799d83a9567156ea402227f9971fd786e47db671'
 route: 'dispatch'
-review_loop_iteration: 0
+review_loop_iteration: 1
 context:
   - _bmad-output/planning-artifacts/architecture/architecture-News-2026-09-14/ARCHITECTURE-SPINE.md
   - _bmad-output/planning-artifacts/ux-designs/ux-News-2026-09-14/DESIGN.md
@@ -76,6 +76,13 @@ context:
 - [x] `backend/src/test/java/com/newsroom/service/auth/AuthServiceLoginTest.java` -- Viết bộ unit test kiểm thử đăng nhập bằng Email, bằng SĐT, sai mật khẩu tăng attempts và khóa 15 phút (7 tests pass 100%).
 - [x] `frontend/src/app/auth/login/page.tsx` -- Điều chỉnh label và placeholder: "Email hoặc Số điện thoại".
 
+### Review Findings
+- [x] [Review][Patch] Reset lockout counter when lockout window expires before incrementing attempts [backend/src/main/java/com/newsroom/service/auth/AuthServiceImpl.java:405]
+- [x] [Review][Patch] Check ACCOUNT_DISABLED before resetting or authenticating to prevent re-activating banned accounts [backend/src/main/java/com/newsroom/service/auth/AuthServiceImpl.java:444]
+- [x] [Review][Patch] Query identifier (email/phone/username) in updateUserToken [backend/src/main/java/com/newsroom/service/implement/UserServiceImplement.java:25]
+- [x] [Review][Patch] Populate email and phone in JwtResponse.UserLogin [backend/src/main/java/com/newsroom/service/auth/AuthServiceImpl.java:458]
+- [x] [Review][Patch] Add unit test for wrong password attempt after lockout expiration [backend/src/test/java/com/newsroom/service/auth/AuthServiceLoginTest.java:708]
+
 **Acceptance Criteria:**
 - Given người dùng nhập đúng email hoặc số điện thoại và mật khẩu hợp lệ, when bấm "Đăng nhập", then hệ thống trả về JWT token (access token 24h, refresh token 7 ngày) và frontend lưu token chuyển hướng đến trang chủ.
 - Given người dùng nhập sai mật khẩu, when gửi request đăng nhập, then hệ thống trả về HTTP 401 kèm thông báo từ `ErrorCode.INVALID_CREDENTIALS` và số lần thử còn lại.
@@ -96,6 +103,12 @@ context:
 ## Review Triage Log
 - Triage: Đã kiểm thử tự động với 7 test cases trong `AuthServiceLoginTest` và 4 test cases trong `AuthServiceRegisterTest` (tổng 11 tests pass 100%).
 - Frontend Next.js build hoàn thành sạch sẽ, không có lỗi runtime/compile.
+- Review Round 1 (2026-09-14): Hoàn thành rà soát 4 lăng kính và đã vá 5 mục patch:
+  1. Tự động reset lockout counter và mốc thời gian khi hết 15 phút khóa.
+  2. Bổ sung kiểm tra `ACCOUNT_DISABLED` tránh tự động kích hoạt tài khoản bị vô hiệu hóa.
+  3. Mở rộng `updateUserToken` và `handleGetUserByUserName` truy vấn linh hoạt theo Email, SĐT hoặc Username.
+  4. Bổ sung `email` và `phone` vào `JwtResponse.UserLogin`.
+  5. Bổ sung 2 unit test cho tài khoản bị vô hiệu hóa và nhập sai mật khẩu sau khi hết hạn khóa (toàn bộ 13/13 tests PASS 100%).
 
 ## Verification
 

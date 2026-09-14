@@ -204,13 +204,32 @@ public class AuthServiceLoginTest {
         User user = new User();
         user.setId("u-123");
         user.setEmail("reader@newsroom.vn");
-        user.setActive(false);
+        user.setActive(true);
         user.setLockoutUntil(Instant.now().plus(10, ChronoUnit.MINUTES));
 
         when(userRepository.findByEmail("reader@newsroom.vn")).thenReturn(user);
 
         AppException ex = assertThrows(AppException.class, () -> authService.login(request));
         assertEquals(ErrorCode.ACCOUNT_LOCKED, ex.getErrorCode());
+        verify(passwordEncoder, never()).matches(anyString(), anyString());
+    }
+
+    @Test
+    @DisplayName("Đăng nhập thất bại khi tài khoản bị vô hiệu hóa (ACCOUNT_DISABLED)")
+    void testLoginDisabledAccountThrowsAccountDisabled() {
+        LoginRequest request = new LoginRequest();
+        request.setUsername("disabled@newsroom.vn");
+        request.setPassword("anyPassword");
+
+        User user = new User();
+        user.setId("u-disabled");
+        user.setEmail("disabled@newsroom.vn");
+        user.setActive(false);
+
+        when(userRepository.findByEmail("disabled@newsroom.vn")).thenReturn(user);
+
+        AppException ex = assertThrows(AppException.class, () -> authService.login(request));
+        assertEquals(ErrorCode.ACCOUNT_DISABLED, ex.getErrorCode());
         verify(passwordEncoder, never()).matches(anyString(), anyString());
     }
 
@@ -226,7 +245,7 @@ public class AuthServiceLoginTest {
         user.setEmail("reader@newsroom.vn");
         user.setUsername("reader");
         user.setPassword("$2a$10$encodedPassword");
-        user.setActive(false);
+        user.setActive(true);
         user.setFailedLoginAttempts(5);
         // Lockout expired 2 minutes ago
         user.setLockoutUntil(Instant.now().minus(2, ChronoUnit.MINUTES));
@@ -244,6 +263,33 @@ public class AuthServiceLoginTest {
         assertEquals(0, user.getFailedLoginAttempts());
         assertNull(user.getLockoutUntil());
         assertTrue(user.isActive());
-        verify(userRepository).save(user);
+        verify(userRepository, atLeastOnce()).save(user);
+    }
+
+    @Test
+    @DisplayName("Nhập sai mật khẩu sau khi hết hạn khóa: Bắt đầu chu kỳ 5 lần thử mới thay vì bị khóa ngay")
+    void testLoginWrongPasswordAfterLockoutExpiredStartsFreshAttempts() {
+        LoginRequest request = new LoginRequest();
+        request.setUsername("reader@newsroom.vn");
+        request.setPassword("wrongPassword");
+
+        User user = new User();
+        user.setId("u-123");
+        user.setEmail("reader@newsroom.vn");
+        user.setPassword("$2a$10$encodedPassword");
+        user.setActive(true);
+        user.setFailedLoginAttempts(5);
+        // Lockout expired 2 minutes ago
+        user.setLockoutUntil(Instant.now().minus(2, ChronoUnit.MINUTES));
+
+        when(userRepository.findByEmail("reader@newsroom.vn")).thenReturn(user);
+        when(passwordEncoder.matches("wrongPassword", "$2a$10$encodedPassword")).thenReturn(false);
+
+        AppException ex = assertThrows(AppException.class, () -> authService.login(request));
+        assertEquals(ErrorCode.INVALID_CREDENTIALS, ex.getErrorCode());
+        assertTrue(ex.getMessage().contains("4 lần thử"));
+        assertEquals(1, user.getFailedLoginAttempts());
+        assertNull(user.getLockoutUntil());
+        verify(userRepository, atLeastOnce()).save(user);
     }
 }

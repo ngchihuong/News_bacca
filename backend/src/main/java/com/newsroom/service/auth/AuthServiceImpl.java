@@ -62,12 +62,24 @@ public class AuthServiceImpl implements IAuthService {
             throw new AppException(ErrorCode.INVALID_CREDENTIALS);
         }
 
+        // Kiểm tra tài khoản có bị vô hiệu hóa bởi quản trị viên
+        if (!currentUserDb.isActive()) {
+            throw new AppException(ErrorCode.ACCOUNT_DISABLED);
+        }
+
         // Kiểm tra tài khoản có đang bị khóa lockout 15 phút do nhập sai 5 lần liên tiếp
         Instant now = Instant.now();
-        if (currentUserDb.getLockoutUntil() != null && currentUserDb.getLockoutUntil().isAfter(now)) {
-            long minutesRemaining = Duration.between(now, currentUserDb.getLockoutUntil()).toMinutes() + 1;
-            throw new AppException(ErrorCode.ACCOUNT_LOCKED,
-                    "Tài khoản tạm thời bị khóa do nhập sai mật khẩu quá 5 lần. Vui lòng thử lại sau " + minutesRemaining + " phút.");
+        if (currentUserDb.getLockoutUntil() != null) {
+            if (currentUserDb.getLockoutUntil().isAfter(now)) {
+                long minutesRemaining = Duration.between(now, currentUserDb.getLockoutUntil()).toMinutes() + 1;
+                throw new AppException(ErrorCode.ACCOUNT_LOCKED,
+                        "Tài khoản tạm thời bị khóa do nhập sai mật khẩu quá 5 lần. Vui lòng thử lại sau " + minutesRemaining + " phút.");
+            } else {
+                // Đã qua 15 phút khóa: Xóa mốc khóa và reset số lần sai về 0
+                currentUserDb.setLockoutUntil(null);
+                currentUserDb.setFailedLoginAttempts(0);
+                this.userRepository.save(currentUserDb);
+            }
         }
 
         // Kiểm tra tính chính xác của mật khẩu
@@ -91,7 +103,6 @@ public class AuthServiceImpl implements IAuthService {
         // Đăng nhập thành công: Reset số lần sai và thời gian khóa
         currentUserDb.setFailedLoginAttempts(0);
         currentUserDb.setLockoutUntil(null);
-        currentUserDb.setActive(true);
         this.userRepository.save(currentUserDb);
 
         String authPrincipal = currentUserDb.getEmail() != null ? currentUserDb.getEmail() : currentUserDb.getUsername();
@@ -107,6 +118,8 @@ public class AuthServiceImpl implements IAuthService {
                 .id(currentUserDb.getId())
                 .name(currentUserDb.getUsername())
                 .username(currentUserDb.getUsername())
+                .email(currentUserDb.getEmail())
+                .phone(currentUserDb.getPhone())
                 .role(currentUserDb.getRole())
                 .build();
         response.setUser(userLogin);
@@ -115,7 +128,8 @@ public class AuthServiceImpl implements IAuthService {
         response.setAccessToken(access_token);
 
         String refresh_token = this.securityUtil.createRefreshToken(authPrincipal, response.getUser());
-        this.userService.updateUserToken(refresh_token, currentUserDb.getEmail());
+        String tokenIdentifier = currentUserDb.getEmail() != null ? currentUserDb.getEmail() : (currentUserDb.getPhone() != null ? currentUserDb.getPhone() : currentUserDb.getUsername());
+        this.userService.updateUserToken(refresh_token, tokenIdentifier);
 
         ResponseCookie responseCookie = ResponseCookie
                 .from("refresh_token", refresh_token)
