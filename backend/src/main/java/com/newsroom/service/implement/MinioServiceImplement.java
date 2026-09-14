@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.FileAlreadyExistsException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -33,6 +35,37 @@ public class MinioServiceImplement implements MinioService {
     @Override
     public String getBucket() {
         return this.bucketName;
+    }
+
+    @Override
+    @CacheEvict(value = "image:path", allEntries = true)
+    public String uploadLocalFileToMinio(@NonNull Path filePath, @NonNull String contentType) {
+        if (!Files.exists(filePath)) {
+            log.error("ERROR file does not exist: {}", filePath);
+            throw new NewsCommonException(Constants.ERROR.FILE.NOT_EXIST);
+        }
+        try {
+            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+            }
+            String fileName = filePath.getFileName().toString();
+            String formattedFileName = this.formatFileName(fileName);
+            long fileSize = Files.size(filePath);
+
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(formattedFileName)
+                    .stream(Files.newInputStream(filePath), fileSize, -1)
+                    .contentType(contentType)
+                    .build();
+            minioClient.putObject(putObjectArgs);
+
+            log.info("Uploaded local file to minio, file: {}", formattedFileName);
+            return formattedFileName;
+        } catch (Exception e) {
+            log.error("ERROR when upload local file", e);
+            throw new NewsCommonException(Constants.ERROR.MINIO.EXTERNAL);
+        }
     }
 
     @Override

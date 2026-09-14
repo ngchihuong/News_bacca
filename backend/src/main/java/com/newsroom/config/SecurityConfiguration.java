@@ -66,7 +66,8 @@ public class SecurityConfiguration {
                                 ApiPrefixConstants.API_MAPPING_PREFIX + "/categories/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/api-docs/**"
+                                "/api-docs/**",
+                                "/download/**"
                         ).permitAll()
                         .requestMatchers(ApiPrefixConstants.API_MAPPING_PREFIX + "/admin/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated())

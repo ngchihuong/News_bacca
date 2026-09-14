@@ -151,5 +151,17 @@ public class Constants {
             public static final String XML_PARSER = "error.minio.xml_parser";
             public static final String EXTERNAL = "error.minio.external";
         }
+
+        public static class SOCIAL {
+            public static final String PLATFORM_UNSUPPORTED = "error.social.platform.unsupported";
+            public static final String VIDEO_DOWNLOAD_FAILED = "error.social.video.download_failed";
+            public static final String VIDEO_YTDLP_FAILED = "error.social.video.ytdlp_failed";
+            public static final String VIDEO_TEMP_DIR_FAILED = "error.social.video.temp_dir_failed";
+            public static final String YOUTUBE_API_KEY_MISSING = "error.social.youtube.api_key_missing";
+            public static final String FACEBOOK_ACCESS_TOKEN_MISSING = "error.social.facebook.access_token_missing";
+            public static final String FACEBOOK_PAGE_ID_MISSING = "error.social.facebook.page_id_missing";
+            public static final String INSTAGRAM_ACCESS_TOKEN_MISSING = "error.social.instagram.access_token_missing";
+            public static final String INSTAGRAM_USER_ID_MISSING = "error.social.instagram.user_id_missing";
+        }
     }
 }
