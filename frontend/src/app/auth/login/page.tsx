@@ -151,7 +151,7 @@ function LoginForm() {
               htmlFor="username"
               className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-1.5"
             >
-              Email hoặc Tên người dùng <span className="text-red-500">*</span>
+              Email hoặc Số điện thoại <span className="text-red-500">*</span>
             </label>
             <input
               id="username"
@@ -161,9 +161,9 @@ function LoginForm() {
                   ? "border-red-500 focus:ring-red-400"
                   : "border-slate-300 dark:border-slate-600 focus:border-[#FF6600] focus:ring-[#FF6600]/20"
               } rounded-xl shadow-sm focus:outline-none focus:ring-2 transition-all`}
-              placeholder="Nhập email hoặc tên tài khoản"
+              placeholder="Nhập email hoặc số điện thoại"
               {...register("username", {
-                required: "Vui lòng nhập email hoặc tên tài khoản",
+                required: "Vui lòng nhập email hoặc số điện thoại",
               })}
             />
             {errors.username && (

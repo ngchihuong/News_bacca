@@ -19,25 +19,35 @@ import java.util.List;
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
+    public com.newsroom.model.User findUserByIdentifier(String identifier) {
+        if (identifier == null || identifier.isBlank()) return null;
+        String id = identifier.trim();
+        com.newsroom.model.User user = this.userRepository.findByEmail(id.toLowerCase());
+        if (user != null) return user;
+        user = this.userRepository.findByPhone(id);
+        if (user != null) return user;
+        return this.userRepository.findByUsername(id).orElse(null);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.newsroom.model.User user = this.userRepository.findByEmail(username);
+        com.newsroom.model.User user = findUserByIdentifier(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
+        boolean accountNonLocked = user.getLockoutUntil() == null || user.getLockoutUntil().isBefore(java.time.Instant.now());
+
         List<GrantedAuthority> authorities = new ArrayList<>();
         if (user.getRole() != null && !user.getRole().isEmpty()) {
             authorities.add(new SimpleGrantedAuthority(user.getRole().toUpperCase()));
-            System.out.println("Load authority for user: " + username + ": " + user.getRole());
         } else {
-            //Default is ANONYMOUS if not have role
-            authorities.add(new SimpleGrantedAuthority("ANONYMOUS"));
-            System.out.println("No role found for user " + username + ", assigned default: ANONYMOUS");
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
         return User.builder()
-                .username(user.getEmail())
+                .username(user.getEmail() != null ? user.getEmail() : user.getUsername())
                 .password(user.getPassword())
-                .roles(user.getRole())
+                .accountLocked(!accountNonLocked)
+                .disabled(!user.isActive())
                 .authorities(authorities)
                 .build();
     }

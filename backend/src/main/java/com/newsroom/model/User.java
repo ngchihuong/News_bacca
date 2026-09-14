@@ -40,7 +40,15 @@ public class User {
 
     private String role;
 
+    @Builder.Default
     private boolean active = false;
+
+    @Field(name = "failed_login_attempts")
+    @Builder.Default
+    private int failedLoginAttempts = 0;
+
+    @Field(name = "lockout_until")
+    private Instant lockoutUntil;
 
     @Field(name = "refresh_token")
     private String refreshToken;
