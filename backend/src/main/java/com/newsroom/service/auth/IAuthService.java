@@ -6,10 +6,12 @@ import com.newsroom.dto.auth.LoginRequest;
 import com.newsroom.model.User;
 import jakarta.validation.Valid;
 
+import com.newsroom.dto.RegisterRequest;
+
 public interface IAuthService {
     JwtResponse login(@Valid LoginRequest request);
 
-    UserDTO register(@Valid User user);
+    UserDTO register(@Valid RegisterRequest request);
 
     void logout();
 

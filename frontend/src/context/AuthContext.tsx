@@ -19,6 +19,8 @@ interface AuthContext {
   setIsAdmin: (v: boolean) => void;
   user: UserLogin | null;
   setUser: (v: UserLogin | null) => void;
+  login: (username: string, password: string) => Promise<any>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContext | undefined>(undefined);
@@ -36,9 +38,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (data?.data?.data) {
       setUser(data.data.data);
       setIsAuthenticated(true);
-      if (data.data.data.role === "admin") {
+      if (data.data.data.role === "admin" || data.data.data.role === "ADMIN" || data.data.data.role === "ROLE_ADMIN") {
         setIsAdmin(true);
-      }else {
+      } else {
         setIsAdmin(false);
       }
     } else if (error) {
@@ -47,9 +49,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsAdmin(false);
     }
   }, [data, error]);
+
+  const login = async (username: string, password: string) => {
+    const res = await api.login(username, password);
+    if (res?.data?.data) {
+      const userData = res.data.data.user;
+      setUser(userData || null);
+      setIsAuthenticated(true);
+      if (res.data.data.access_token) {
+        localStorage.setItem("access_token", res.data.data.access_token);
+      }
+      if (userData) {
+        localStorage.setItem("user", JSON.stringify(userData));
+        if (userData.role === "ADMIN" || userData.role === "admin" || userData.role === "ROLE_ADMIN") {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
+      }
+    }
+    return res;
+  };
+
+  const logout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
+    setUser(null);
+    setIsAuthenticated(false);
+    setIsAdmin(false);
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user,setUser, isAuthenticated,setIsAuthenticated, isAdmin, setIsAdmin }}
+      value={{ user, setUser, isAuthenticated, setIsAuthenticated, isAdmin, setIsAdmin, login, logout }}
     >
       {children}
     </AuthContext.Provider>
@@ -60,3 +92,5 @@ export function useAppContext() {
   const context = useContext(AuthContext);
   return context as AuthContext;
 }
+
+export const useAuth = useAppContext;

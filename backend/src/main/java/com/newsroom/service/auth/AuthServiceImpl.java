@@ -79,22 +79,34 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     @Override
-    public UserDTO register(User user) {
-        boolean existUser = this.userRepository.existsByEmail(user.getEmail());
+    public UserDTO register(com.newsroom.dto.RegisterRequest request) {
+        String normalizedEmail = request.getEmail().trim().toLowerCase();
+        boolean existUser = this.userRepository.existsByEmail(normalizedEmail);
         if (existUser) {
-            throw new NewsCommonException(Constants.ERROR.USER.EXIST);
+            throw new NewsCommonException("Email đã được sử dụng");
         }
 
         User newUser = new User();
-        newUser.setUsername(user.getUsername());
-        newUser.setFullName(user.getFullName());
-        newUser.setEmail(user.getEmail());
-        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        newUser.setPhone(user.getPhone() == null ? "" : user.getPhone());
-        newUser.setAge(user.getAge() == null ? null : user.getAge());
-        newUser.setRole("VIEWER");
+        String baseUsername = (request.getUsername() != null && !request.getUsername().isBlank())
+                ? request.getUsername().trim()
+                : normalizedEmail.split("@")[0].replaceAll("[^a-zA-Z0-9_]", "");
+        if (baseUsername.isBlank()) {
+            baseUsername = "user";
+        }
+        String username = baseUsername;
+        int suffix = 1;
+        while (Boolean.TRUE.equals(this.userRepository.existsByUsername(username))) {
+            username = baseUsername + suffix;
+            suffix++;
+        }
+
+        newUser.setUsername(username);
+        newUser.setFullName(request.getFullName().trim());
+        newUser.setEmail(normalizedEmail);
+        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        newUser.setRole("ROLE_USER");
         newUser.setActive(true);
-        newUser.setAvatarUrl(user.getAvatarUrl() == null ? "" : user.getAvatarUrl());
+        newUser.setAvatarUrl("");
         newUser.setCreatedAt(Instant.now());
         newUser.setUpdatedAt(Instant.now());
         this.userRepository.save(newUser);
@@ -184,6 +196,7 @@ public class AuthServiceImpl implements IAuthService {
     private UserDTO convertUserToDTO(User user) {
         return UserDTO.builder()
                 .id(user.getId())
+                .username(user.getUsername())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
                 .phone(user.getPhone())

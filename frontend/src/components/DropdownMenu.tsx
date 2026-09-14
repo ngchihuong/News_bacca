@@ -160,7 +160,7 @@ export default function DropdownMenu({ isMenuOpen, setIsMenuOpen }: Props) {
                   </Link>
                   <FaAngleRight className="text-xl" />
                 </div>
-                <div className="py-1 flex items-center  m-1 hover:bg-gray-200 justify-between rounded-md">
+                <div className="py-1 flex items-center m-1 hover:bg-gray-200 justify-between rounded-md">
                   <Link
                     href={`/auth/login`}
                     className="flex items-center px-1 py-2 text-sm font-semibold text-black hover:text-gray-600 gap-2"
@@ -168,20 +168,23 @@ export default function DropdownMenu({ isMenuOpen, setIsMenuOpen }: Props) {
                     <div className="bg-gray-300 rounded-full p-1.5 flex items-center justify-start ">
                       <IoIosLogIn className="text-xl font-bold" />
                     </div>
-                    Sign-in to Cacbac
+                    Đăng nhập
+                  </Link>
+                  <FaAngleRight className="text-xl" />
+                </div>
+                <div className="py-1 flex items-center m-1 hover:bg-gray-200 justify-between rounded-md">
+                  <Link
+                    href={`/register`}
+                    className="flex items-center px-1 py-2 text-sm font-semibold text-black hover:text-gray-600 gap-2"
+                  >
+                    <div className="bg-gray-300 rounded-full p-1.5 flex items-center justify-start ">
+                      <FaRegUserCircle className="text-xl font-bold text-[#FF6600]" />
+                    </div>
+                    Đăng ký tài khoản
                   </Link>
                   <FaAngleRight className="text-xl" />
                 </div>
               </div>
-              {/* <div className="py-2">
-              <a
-                href="#"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white"
-              >
-                Register
-              </a>
-            </div> */}
-              {/* Not Logged In */}
             </>
           )}
         </div>

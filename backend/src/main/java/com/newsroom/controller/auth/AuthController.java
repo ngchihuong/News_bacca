@@ -3,6 +3,7 @@ package com.newsroom.controller.auth;
 import com.newsroom.commons.ApiPrefixConstants;
 import com.newsroom.commons.Constants;
 import com.newsroom.config.exceptions.NewsCommonException;
+import com.newsroom.dto.RegisterRequest;
 import com.newsroom.dto.ResponseDTO.BaseOutput;
 import com.newsroom.dto.UserDTO;
 import com.newsroom.dto.auth.JwtResponse;
@@ -57,8 +58,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<BaseOutput<?>> register(@Valid @RequestBody User user) {
-        if (user == null) {
+    public ResponseEntity<BaseOutput<?>> register(@Valid @RequestBody RegisterRequest request) {
+        if (request == null) {
             return ResponseEntity.badRequest()
                     .body(
                             BaseOutput.builder()
@@ -67,13 +68,13 @@ public class AuthController {
                                     .build()
                     );
         }
-        UserDTO userDTO = this.authService.register(user);
+        UserDTO userDTO = this.authService.register(request);
         return ResponseEntity.ok()
                 .body(
                         BaseOutput.<UserDTO>builder()
                                 .status(ResponseStatus.SUCCESS)
                                 .data(userDTO)
-                                .message(HttpStatus.OK.toString())
+                                .message("Đăng ký tài khoản thành công")
                                 .build()
                 );
     }

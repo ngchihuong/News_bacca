@@ -86,8 +86,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = NewsCommonException.class)
     public ResponseEntity<Object> handleTCCommonException(NewsCommonException e) {
-        log.error("ERROR TCCommonException: {}", e.getMessage());
-        return ResponseEntity.status(HttpStatus.OK)
+        log.error("ERROR NewsCommonException: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(
                         BaseOutput.builder()
                                 .errors(List.of(e.getMessage()))
