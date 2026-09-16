@@ -1,5 +1,6 @@
 import axios from "@/utils/axios-customize";
-import { BaseOutput, UpdateProfileRequest, UserProfile } from "@/types/backend";
+import { BaseOutput, UpdateProfileRequest, UserProfile, PublicUserProfile } from "@/types/backend";
+import { News, PaginatedResponse } from "@/types";
 
 const API_PREFIX = "/user";
 
@@ -19,6 +20,16 @@ export const userApi = {
       headers: {
         "Content-Type": "multipart/form-data",
       },
+    });
+  },
+
+  getPublicProfile: (id: string) => {
+    return axios.get<BaseOutput<PublicUserProfile>>(`${API_PREFIX}/${id}/public`);
+  },
+
+  getAuthorArticles: (id: string, page: number = 0, size: number = 10) => {
+    return axios.get<BaseOutput<PaginatedResponse<News>>>(`${API_PREFIX}/${id}/articles`, {
+      params: { page, size },
     });
   },
 };

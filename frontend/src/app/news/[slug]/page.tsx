@@ -88,16 +88,37 @@ export default function NewsDetailPage() {
             </div>
             
             <div className="p-6">
-              <div className="mb-4 text-sm text-gray-600">
-                <Link href={`/category/${news.categoryId}`} className="hover:text-primary font-medium">
-                  {news.categoryName}
-                </Link>
-                <span className="px-2">/</span>
-                <span>{new Date(news.publishedAt).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}</span>
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <Link href={`/category/${news.categoryId}`} className="hover:text-primary font-medium">
+                    {news.categoryName}
+                  </Link>
+                  <span className="text-gray-300">/</span>
+                  <span>{new Date(news.publishedAt).toLocaleDateString('vi-VN', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}</span>
+                </div>
+
+                {news.authorId && (
+                  <Link
+                    href={`/user/${news.authorId}`}
+                    className="inline-flex items-center gap-2 group hover:opacity-90 transition"
+                  >
+                    <div className="w-7 h-7 rounded-full bg-slate-200 overflow-hidden relative border border-slate-300">
+                      <Image
+                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80"
+                        alt={news.authorName || 'Tác giả'}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <span className="font-semibold text-slate-800 group-hover:text-primary transition">
+                      {news.authorName || 'Tác giả'}
+                    </span>
+                  </Link>
+                )}
               </div>
 
               <h1 className="text-3xl font-bold mb-4">{news.title}</h1>
@@ -119,6 +140,38 @@ export default function NewsDetailPage() {
                       </Link>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {/* Author Showcase Box */}
+              {news.authorId && (
+                <div className="mt-8 pt-6 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50 rounded-xl p-4 border border-slate-200/60">
+                  <Link
+                    href={`/user/${news.authorId}`}
+                    className="flex items-center gap-3 group"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-slate-200 overflow-hidden relative border-2 border-white shadow-sm flex-shrink-0">
+                      <Image
+                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80"
+                        alt={news.authorName || "Tác giả"}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500 font-medium">Tác giả bài viết</p>
+                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-primary transition">
+                        {news.authorName || "Tác giả"}
+                      </h4>
+                    </div>
+                  </Link>
+
+                  <Link
+                    href={`/user/${news.authorId}`}
+                    className="inline-flex items-center justify-center text-xs font-semibold px-4 py-2 rounded-full border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 transition shadow-sm"
+                  >
+                    Xem hồ sơ tác giả →
+                  </Link>
                 </div>
               )}
             </div>

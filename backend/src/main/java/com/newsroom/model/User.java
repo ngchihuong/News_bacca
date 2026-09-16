@@ -40,6 +40,21 @@ public class User {
 
     private String bio;
 
+    @Field(name = "is_journalist_verified")
+    @Builder.Default
+    private boolean isJournalistVerified = false;
+
+    @Field(name = "journalist_organization")
+    private String journalistOrganization;
+
+    @Field(name = "followers_count")
+    @Builder.Default
+    private int followersCount = 0;
+
+    @Field(name = "following_count")
+    @Builder.Default
+    private int followingCount = 0;
+
     private String role;
 
     @Builder.Default

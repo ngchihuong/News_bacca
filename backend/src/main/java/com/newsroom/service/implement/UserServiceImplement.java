@@ -1,6 +1,7 @@
 package com.newsroom.service.implement;
 
 import com.newsroom.config.exceptions.AppException;
+import com.newsroom.dto.user.PublicUserProfileResponse;
 import com.newsroom.dto.user.UpdateProfileRequest;
 import com.newsroom.dto.user.UserProfileResponse;
 import com.newsroom.enums.ErrorCode;
@@ -120,5 +121,31 @@ public class UserServiceImplement implements IUserService {
         this.userRepository.save(user);
 
         return avatarUrl;
+    }
+
+    @Override
+    public PublicUserProfileResponse getPublicUserProfile(String userId) {
+        if (userId == null || userId.isBlank()) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+        User user = this.userRepository.findById(userId.trim())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        if (!user.isActive()) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND, "Hồ sơ người dùng không khả dụng hoặc đã bị vô hiệu hóa");
+        }
+
+        return PublicUserProfileResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .fullName(user.getFullName() != null && !user.getFullName().isBlank() ? user.getFullName() : user.getUsername())
+                .avatarUrl(user.getAvatarUrl())
+                .bio(user.getBio())
+                .isJournalistVerified(user.isJournalistVerified())
+                .journalistOrganization(user.getJournalistOrganization())
+                .followersCount(user.getFollowersCount())
+                .followingCount(user.getFollowingCount())
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 }

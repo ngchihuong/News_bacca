@@ -59,3 +59,17 @@ export interface RegisterRequest {
   fullName: string;
   username?: string;
 }
+
+export interface PublicUserProfile {
+  id: string;
+  username: string;
+  fullName?: string;
+  avatarUrl?: string;
+  bio?: string;
+  isJournalistVerified: boolean;
+  journalistOrganization?: string;
+  followersCount: number;
+  followingCount: number;
+  createdAt?: string;
+}
+

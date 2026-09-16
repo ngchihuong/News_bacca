@@ -1,5 +1,6 @@
 package com.newsroom.service;
 
+import com.newsroom.dto.user.PublicUserProfileResponse;
 import com.newsroom.dto.user.UpdateProfileRequest;
 import com.newsroom.dto.user.UserProfileResponse;
 import com.newsroom.model.User;
@@ -15,4 +16,6 @@ public interface IUserService {
     UserProfileResponse updateCurrentUserProfile(UpdateProfileRequest request);
 
     String uploadAvatar(MultipartFile file);
+
+    PublicUserProfileResponse getPublicUserProfile(String userId);
 }

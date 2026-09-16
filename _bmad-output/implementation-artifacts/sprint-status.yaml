@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-14-2026 15:53
-last_updated: 09-16-2026 10:57
+last_updated: 09-16-2026 17:24
 project: News
 project_key: NOKEY
 tracking_system: file-system
@@ -39,7 +39,7 @@ development_status:
   1-1-user-registration-account-creation: review
   1-2-user-login-jwt-authentication-rate-limiting: done
   1-3-user-profile-management-avatar-upload-via-minio: done
-  1-4-public-profile-view-author-showcase: backlog
+  1-4-public-profile-view-author-showcase: review
   1-5-dark-light-theme-switcher: backlog
   epic-1-retrospective: optional
 

@@ -65,6 +65,8 @@ public class SecurityConfiguration {
                                 ApiPrefixConstants.API_MAPPING_PREFIX + "/auth/refresh",
                                 ApiPrefixConstants.API_MAPPING_PREFIX + "/auth/register",
                                 ApiPrefixConstants.API_MAPPING_PREFIX + "/categories/**",
+                                ApiPrefixConstants.API_MAPPING_PREFIX + "/user/*/public",
+                                ApiPrefixConstants.API_MAPPING_PREFIX + "/user/*/articles",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/api-docs/**"
