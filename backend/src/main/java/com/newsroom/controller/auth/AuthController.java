@@ -85,9 +85,10 @@ public class AuthController {
 
         ResponseCookie deleteSpringCookie =
                 ResponseCookie
-                        .from("refresh_token", null)
+                        .from("refresh_token", "")
                         .httpOnly(true)
-                        .secure(true)
+                        .secure(false)
+                        .sameSite("Lax")
                         .path("/")
                         .maxAge(0)
                         .build();
@@ -104,10 +105,13 @@ public class AuthController {
 
     @GetMapping("/refresh")
     public ResponseEntity<BaseOutput<?>> getRefreshToken(
-            @CookieValue(name = "refresh_token", defaultValue = "huongdeptrai") String refreshToken
+            @CookieValue(name = "refresh_token", required = false) String refreshToken
     ) {
-        if (refreshToken.equals("huongdeptrai")) {
-            throw new NewsCommonException(Constants.ERROR.REQUEST.INVALID_PATH_VARIABLE_ID);
+        if (refreshToken == null || refreshToken.isBlank()) {
+            throw new com.newsroom.config.exceptions.AppException(
+                    com.newsroom.enums.ErrorCode.TOKEN_EXPIRED,
+                    "Refresh token không tồn tại hoặc đã hết hạn"
+            );
         }
         JwtResponse response = this.authService.getRefreshToken(refreshToken);
         return ResponseEntity.ok()

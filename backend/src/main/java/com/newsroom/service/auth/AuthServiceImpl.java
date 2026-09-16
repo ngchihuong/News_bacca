@@ -43,7 +43,7 @@ public class AuthServiceImpl implements IAuthService {
         String id = identifier.trim();
         User user = this.userRepository.findByEmail(id.toLowerCase());
         if (user != null) return user;
-        user = this.userRepository.findByPhone(id);
+        user = this.userRepository.findFirstByPhone(id);
         if (user != null) return user;
         return this.userRepository.findByUsername(id).orElse(null);
     }
@@ -116,10 +116,12 @@ public class AuthServiceImpl implements IAuthService {
         JwtResponse.UserLogin userLogin = JwtResponse.UserLogin.builder()
                 .type("Bearer ")
                 .id(currentUserDb.getId())
-                .name(currentUserDb.getUsername())
+                .name(currentUserDb.getFullName() != null && !currentUserDb.getFullName().isBlank() ? currentUserDb.getFullName() : currentUserDb.getUsername())
                 .username(currentUserDb.getUsername())
                 .email(currentUserDb.getEmail())
                 .phone(currentUserDb.getPhone())
+                .avatarUrl(currentUserDb.getAvatarUrl())
+                .bio(currentUserDb.getBio())
                 .role(currentUserDb.getRole())
                 .build();
         response.setUser(userLogin);
@@ -134,7 +136,8 @@ public class AuthServiceImpl implements IAuthService {
         ResponseCookie responseCookie = ResponseCookie
                 .from("refresh_token", refresh_token)
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(expirationRefreshToken)
                 .build();
@@ -184,14 +187,12 @@ public class AuthServiceImpl implements IAuthService {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ?
                 SecurityUtil.getCurrentUserLogin().get() : "";
         if (email == null || email.isEmpty()) {
-            throw new NewsCommonException(Constants.ERROR.USER.INVALID_CREDENTIAL);
+            throw new AppException(ErrorCode.UNAUTHORIZED, "Người dùng chưa đăng nhập");
         }
         User currentUserDb = this.userService.handleGetUserByUserName(email);
         if (currentUserDb == null) {
-            throw new NewsCommonException(Constants.ERROR.USER.NOT_EXIST);
+            throw new AppException(ErrorCode.USER_NOT_FOUND, "Không tìm thấy người dùng");
         }
-        currentUserDb.setActive(false);
-        this.userRepository.save(currentUserDb);
 
         this.userService.updateUserToken(null, email);
     }
@@ -202,7 +203,7 @@ public class AuthServiceImpl implements IAuthService {
         String email = decodeToken.getSubject();
         User currentUserDb = this.getUserByRefreshTokenAndEmail(refreshToken, email);
         if (currentUserDb == null) {
-            throw new NewsCommonException(Constants.ERROR.USER.INVALID_CREDENTIAL);
+            throw new AppException(ErrorCode.INVALID_TOKEN, "Refresh token không hợp lệ hoặc đã bị thu hồi");
         }
 
         JwtResponse res = new JwtResponse();
@@ -210,7 +211,12 @@ public class AuthServiceImpl implements IAuthService {
             JwtResponse.UserLogin userLogin = JwtResponse.UserLogin.builder()
                     .type("Bearer ")
                     .id(currentUserDb.getId())
-                    .name(currentUserDb.getUsername())
+                    .name(currentUserDb.getFullName() != null && !currentUserDb.getFullName().isBlank() ? currentUserDb.getFullName() : currentUserDb.getUsername())
+                    .username(currentUserDb.getUsername())
+                    .email(currentUserDb.getEmail())
+                    .phone(currentUserDb.getPhone())
+                    .avatarUrl(currentUserDb.getAvatarUrl())
+                    .bio(currentUserDb.getBio())
                     .role(currentUserDb.getRole())
                     .build();
             res.setUser(userLogin);
@@ -222,13 +228,14 @@ public class AuthServiceImpl implements IAuthService {
         //create refresh_token
         String new_refresh_token = this.securityUtil.createRefreshToken(email, res.getUser());
 
-//update user
+        //update user
         this.userService.updateUserToken(new_refresh_token, email);
 
         ResponseCookie responseCookie = ResponseCookie
                 .from("refresh_token", new_refresh_token)
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(expirationRefreshToken)
                 .build();
@@ -240,18 +247,26 @@ public class AuthServiceImpl implements IAuthService {
     public JwtResponse.UserLogin getAccount() {
         String email = SecurityUtil.getCurrentUserLogin().isPresent()
                 ? SecurityUtil.getCurrentUserLogin().get() : "";
-
-        User currentUserDb = this.userRepository.findByEmail(email);
-        JwtResponse.UserLogin.UserLoginBuilder userLogin
-                = JwtResponse.UserLogin.builder();
-
-        if (currentUserDb != null) {
-            userLogin.type("Bearer ");
-            userLogin.id(currentUserDb.getId());
-            userLogin.name(currentUserDb.getUsername());
-            userLogin.role(currentUserDb.getRole());
+        if (email == null || email.isBlank()) {
+            throw new AppException(ErrorCode.UNAUTHORIZED, "Người dùng chưa đăng nhập");
         }
-        return userLogin.build();
+
+        User currentUserDb = this.findUserByIdentifier(email);
+        if (currentUserDb == null) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND, "Không tìm thấy người dùng");
+        }
+
+        return JwtResponse.UserLogin.builder()
+                .type("Bearer ")
+                .id(currentUserDb.getId())
+                .name(currentUserDb.getFullName() != null && !currentUserDb.getFullName().isBlank() ? currentUserDb.getFullName() : currentUserDb.getUsername())
+                .username(currentUserDb.getUsername())
+                .email(currentUserDb.getEmail())
+                .phone(currentUserDb.getPhone())
+                .avatarUrl(currentUserDb.getAvatarUrl())
+                .bio(currentUserDb.getBio())
+                .role(currentUserDb.getRole())
+                .build();
     }
 
     public User getUserByRefreshTokenAndEmail(String token, String email) {

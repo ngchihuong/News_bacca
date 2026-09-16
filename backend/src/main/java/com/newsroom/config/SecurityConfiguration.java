@@ -60,6 +60,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
+                                "/public/**",
                                 ApiPrefixConstants.API_MAPPING_PREFIX + "/auth/login",
                                 ApiPrefixConstants.API_MAPPING_PREFIX + "/auth/refresh",
                                 ApiPrefixConstants.API_MAPPING_PREFIX + "/auth/register",

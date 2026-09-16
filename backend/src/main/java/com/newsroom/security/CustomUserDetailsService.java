@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         String id = identifier.trim();
         com.newsroom.model.User user = this.userRepository.findByEmail(id.toLowerCase());
         if (user != null) return user;
-        user = this.userRepository.findByPhone(id);
+        user = this.userRepository.findFirstByPhone(id);
         if (user != null) return user;
         return this.userRepository.findByUsername(id).orElse(null);
     }

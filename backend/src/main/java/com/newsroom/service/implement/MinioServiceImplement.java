@@ -269,12 +269,23 @@ public class MinioServiceImplement implements MinioService {
     }
 
     private String formatFileName(String originalFileName) {
-        String baseName = originalFileName.substring(0, originalFileName.lastIndexOf("."));
-        String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+        if (originalFileName == null || originalFileName.isBlank()) {
+            originalFileName = "avatar_" + System.currentTimeMillis() + ".jpg";
+        }
+        int dotIndex = originalFileName.lastIndexOf(".");
+        String baseName;
+        String extension;
+        if (dotIndex >= 0) {
+            baseName = originalFileName.substring(0, dotIndex);
+            extension = originalFileName.substring(dotIndex);
+        } else {
+            baseName = originalFileName;
+            extension = ".jpg";
+        }
 
-        //remove special characters and space (only move text, number _ and -)
+        // Only keep alphanumeric, _ and -
         baseName = baseName.replaceAll("[^a-zA-Z0-9]", "_");
         long timestamp = System.currentTimeMillis();
-        return  baseName + "-"+ timestamp + extension;
+        return baseName + "-" + timestamp + extension;
     }
 }

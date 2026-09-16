@@ -74,17 +74,17 @@ function LoginForm() {
         placement: "topRight",
       });
 
-      if (res?.data?.data) {
-        const userData = res.data.data.user;
+      const authData = res?.data?.access_token ? res.data : (res?.data?.data || res?.data || res);
+      const userData = authData?.user;
+      const accessToken = authData?.access_token;
+
+      if (accessToken) {
+        localStorage.setItem("access_token", accessToken);
+      }
+      if (userData) {
         setUser(userData);
         setIsAuthenticated(true);
-
-        if (res.data.data.access_token) {
-          localStorage.setItem("access_token", res.data.data.access_token);
-        }
-        if (userData) {
-          localStorage.setItem("user", JSON.stringify(userData));
-        }
+        localStorage.setItem("user", JSON.stringify(userData));
 
         const role = userData?.role;
         if (role === "ADMIN" || role === "ROLE_ADMIN") {
@@ -94,6 +94,9 @@ function LoginForm() {
           setIsAdmin(false);
           router.push("/");
         }
+      } else if (accessToken) {
+        setIsAuthenticated(true);
+        router.push("/");
       }
 
       queryClient.clear();

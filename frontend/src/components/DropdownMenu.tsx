@@ -2,19 +2,20 @@
 
 import { useAppContext } from "@/context/AuthContext";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { FaAngleRight, FaRegMoon, FaRegUserCircle } from "react-icons/fa";
-import { IoIosArrowDropdownCircle, IoIosLogIn } from "react-icons/io";
+import { useEffect, useRef } from "react";
+import { FaAngleRight, FaRegUserCircle, FaShieldAlt } from "react-icons/fa";
+import { IoIosArrowDropdownCircle, IoIosLogIn, IoIosLogOut } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
-import { MdOutlineContactSupport } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 type Props = {
   isMenuOpen: boolean;
   setIsMenuOpen: (v: boolean) => void;
 };
-export default function DropdownMenu({ isMenuOpen, setIsMenuOpen }: Props) {
-  const { user, isAuthenticated } = useAppContext();
 
+export default function DropdownMenu({ isMenuOpen, setIsMenuOpen }: Props) {
+  const { user, isAuthenticated, isAdmin, logout } = useAppContext();
+  const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const toggle = () => setIsMenuOpen(!isMenuOpen);
@@ -30,160 +31,168 @@ export default function DropdownMenu({ isMenuOpen, setIsMenuOpen }: Props) {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [setIsMenuOpen]);
+
+  const handleLogout = () => {
+    logout();
+    setIsMenuOpen(false);
+    router.push("/auth/login");
+  };
+
+  const getAvatarSrc = () => {
+    if (user?.avatarUrl) {
+      if (user.avatarUrl.startsWith("http")) {
+        return user.avatarUrl;
+      }
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:8080";
+      return `${backendUrl}${user.avatarUrl}`;
+    }
+    return "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80";
+  };
+
   return (
     <div ref={dropdownRef} className="relative">
-      {/* Nút menu */}
+      {/* Button toggle avatar */}
       <div
-        className="w-8 h-8 text-[16px] xs:w-9 xs:h-9 xs:text-lg md:w-12 md:h-12 rounded-full bg-[#efefef] flex items-center
-         justify-center text-2xl cursor-pointer transition-colors duration-200 hover:bg-[#e0e0e0]"
+        className="w-9 h-9 md:w-11 md:h-11 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 hover:ring-2 hover:ring-orange-500 relative"
         onClick={toggle}
       >
-        <img
-          src="https://ngchihuong.github.io/cv/assets/thuxinhdep-nlvzQFLc.jpg"
-          alt=""
-          className="rounded-full relative"
-        />
-        <div className="absolute bg-gray-100 h-4 w-4 rounded-full right-0 bottom-0 flex items-center justify-center">
-          <IoIosArrowDropdownCircle className="font-bold text-gray-800 rounded-full" />
+        {isAuthenticated && user ? (
+          <img
+            src={getAvatarSrc()}
+            alt="Avatar"
+            className="w-full h-full object-cover rounded-full"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src =
+                "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80";
+            }}
+          />
+        ) : (
+          <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+            <FaRegUserCircle className="text-xl" />
+          </div>
+        )}
+        <div className="absolute bg-white shadow h-4 w-4 rounded-full right-0 bottom-0 flex items-center justify-center border border-gray-200">
+          <IoIosArrowDropdownCircle className="text-gray-700 text-xs" />
         </div>
       </div>
-      {/* Dropdown */}
+
+      {/* Dropdown Box */}
       {isMenuOpen && (
-        <div
-          className="absolute right-0 mt-2 bg-gray-100 shadow-md rounded-md w-72 p-1 divide-y-2 divide-gray-400 border
-           border-gray-200 "
-        >
-          <div className="flex items-center  gap-1 md:gap-0 py-1 px-1 m-1 hover:bg-gray-200 rounded-md">
-            {/* isAuthenticated == true then "gap-2 "*/}
-            <div
-              className="w-4 h-4 text-[16px] xs:w-5 xs:h-5 xs:text-lg md:w-8 md:h-8 rounded-full flex items-center
-         justify-start text-2xl cursor-pointer transition-colors duration-200 hover:bg-[#e0e0e0]"
-            >
-              {/* <img
-                  src="https://ngchihuong.github.io/cv/assets/thuxinhdep-nlvzQFLc.jpg"
-                  alt=""
-                  className="rounded-full relative"
-                /> */}
-              <FaRegUserCircle className="rounded-full relative text-2xl" />
-            </div>
-            <Link
-              href={`/auth/login`}
-              className="block text-lg font-semibold text-black hover:text-gray-600"
-            >
-              Not account?
-            </Link>
-          </div>
-          {isAuthenticated == true && user != null ? (
+        <div className="absolute right-0 mt-2 bg-white shadow-xl rounded-xl w-72 p-2 border border-gray-100 z-50 text-gray-800 animate-in fade-in duration-150">
+          {isAuthenticated && user ? (
             <>
-              {/* IsLogged In */}
-              <div className="px-4 py-3 text-sm text-gray-900">
-                <div>Bonnie Green</div>
-                <div className="font-medium truncate">name@flowbite.com</div>
+              {/* Logged-in Header */}
+              <div className="px-3 py-2.5 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg mb-2">
+                <div className="font-semibold text-gray-900 truncate">
+                  {user.name || user.username || "Thành viên"}
+                </div>
+                <div className="text-xs text-gray-500 truncate">
+                  {user.email || user.username}
+                </div>
+                {user.role && (
+                  <span className="inline-block mt-1 px-2 py-0.5 text-[11px] font-medium bg-orange-100 text-orange-700 rounded-full">
+                    {user.role.replace("ROLE_", "")}
+                  </span>
+                )}
               </div>
-              <ul
-                className="py-2 text-sm text-gray-900"
-                aria-labelledby="dropdownUserAvatarButton"
-              >
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+
+              {/* Navigation Items */}
+              <div className="space-y-1">
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors"
                   >
-                    Dashboard
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Settings
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Earnings
-                  </a>
-                </li>
-              </ul>
-              <div className="py-2">
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-500 dark:hover:text-white"
+                    <div className="flex items-center gap-2.5">
+                      <div className="bg-orange-100 text-orange-600 p-1.5 rounded-lg">
+                        <FaShieldAlt className="text-base" />
+                      </div>
+                      <span>Trang quản trị (Admin)</span>
+                    </div>
+                    <FaAngleRight className="text-xs text-gray-400" />
+                  </Link>
+                )}
+
+                <Link
+                  href="/settings/profile"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-orange-600 rounded-lg transition-colors"
                 >
-                  Sign out
-                </a>
+                  <div className="flex items-center gap-2.5">
+                    <div className="bg-gray-100 text-gray-600 p-1.5 rounded-lg">
+                      <IoSettingsOutline className="text-base" />
+                    </div>
+                    <span>Cài đặt thông tin cá nhân</span>
+                  </div>
+                  <FaAngleRight className="text-xs text-gray-400" />
+                </Link>
               </div>
-              {/* IsLogged In */}
+
+              {/* Logout Button */}
+              <div className="pt-2 mt-2 border-t border-gray-100">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                >
+                  <div className="bg-red-100 text-red-600 p-1.5 rounded-lg">
+                    <IoIosLogOut className="text-base" />
+                  </div>
+                  <span>Đăng xuất</span>
+                </button>
+              </div>
             </>
           ) : (
             <>
               {/* Not Logged In */}
-              <div className="">
-                <div className="py-1 flex items-center  m-1 hover:bg-gray-200 justify-between rounded-md">
+              <div className="p-2 mb-2 bg-gray-50 rounded-lg text-center">
+                <p className="text-xs text-gray-500 mb-2">Đăng nhập để trải nghiệm đầy đủ các tính năng</p>
+                <div className="flex gap-2">
                   <Link
-                    href={`/auth/login`}
-                    className="flex items-center px-1 py-2 text-sm font-semibold text-black hover:text-gray-600 gap-2"
+                    href="/auth/login"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex-1 py-1.5 bg-orange-600 text-white rounded-lg text-xs font-semibold hover:bg-orange-700 text-center transition"
                   >
-                    <div className="bg-gray-300 rounded-full p-1.5 flex items-center justify-start ">
-                      <IoSettingsOutline className="text-xl font-bold" />
-                    </div>
-                    Setting
-                  </Link>
-                  <FaAngleRight className="text-xl" />
-                </div>
-                <div className="py-1 flex items-center  m-1 hover:bg-gray-200 justify-between rounded-md">
-                  <Link
-                    href={`/auth/login`}
-                    className="flex items-center px-1 py-2 text-sm font-semibold text-black hover:text-gray-600 gap-2"
-                  >
-                    <div className="bg-gray-300 rounded-full p-1.5 flex items-center justify-start ">
-                      <MdOutlineContactSupport className="text-xl font-bold" />
-                    </div>
-                    Help and support
-                  </Link>
-                  <FaAngleRight className="text-xl" />
-                </div>
-                <div className="py-1 flex items-center  m-1 hover:bg-gray-200 justify-between rounded-md">
-                  <Link
-                    href={`/auth/login`}
-                    className="flex items-center px-1 py-2 text-sm font-semibold text-black hover:text-gray-600 gap-2"
-                  >
-                    <div className="bg-gray-300 rounded-full p-1.5 flex items-center justify-start ">
-                      <FaRegMoon className="text-xl font-bold" />
-                    </div>
-                    Display and accessibility
-                  </Link>
-                  <FaAngleRight className="text-xl" />
-                </div>
-                <div className="py-1 flex items-center m-1 hover:bg-gray-200 justify-between rounded-md">
-                  <Link
-                    href={`/auth/login`}
-                    className="flex items-center px-1 py-2 text-sm font-semibold text-black hover:text-gray-600 gap-2"
-                  >
-                    <div className="bg-gray-300 rounded-full p-1.5 flex items-center justify-start ">
-                      <IoIosLogIn className="text-xl font-bold" />
-                    </div>
                     Đăng nhập
                   </Link>
-                  <FaAngleRight className="text-xl" />
-                </div>
-                <div className="py-1 flex items-center m-1 hover:bg-gray-200 justify-between rounded-md">
                   <Link
-                    href={`/register`}
-                    className="flex items-center px-1 py-2 text-sm font-semibold text-black hover:text-gray-600 gap-2"
+                    href="/auth/register"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex-1 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-lg text-xs font-semibold hover:bg-gray-50 text-center transition"
                   >
-                    <div className="bg-gray-300 rounded-full p-1.5 flex items-center justify-start ">
-                      <FaRegUserCircle className="text-xl font-bold text-[#FF6600]" />
-                    </div>
-                    Đăng ký tài khoản
+                    Đăng ký
                   </Link>
-                  <FaAngleRight className="text-xl" />
                 </div>
+              </div>
+
+              <div className="space-y-1">
+                <Link
+                  href="/auth/login"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="bg-gray-100 text-gray-600 p-1.5 rounded-lg">
+                      <IoIosLogIn className="text-base" />
+                    </div>
+                    <span>Đăng nhập tài khoản</span>
+                  </div>
+                  <FaAngleRight className="text-xs text-gray-400" />
+                </Link>
+                <Link
+                  href="/auth/register"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="bg-orange-100 text-orange-600 p-1.5 rounded-lg">
+                      <FaRegUserCircle className="text-base" />
+                    </div>
+                    <span>Tạo tài khoản mới</span>
+                  </div>
+                  <FaAngleRight className="text-xs text-gray-400" />
+                </Link>
               </div>
             </>
           )}

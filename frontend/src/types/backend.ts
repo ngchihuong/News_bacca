@@ -10,7 +10,11 @@ export interface UserLogin {
   id?: string;
   name?: string;
   username?: string;
+  email?: string;
+  phone?: string;
   role?: string;
+  avatarUrl?: string;
+  bio?: string;
 }
 export interface AuthResponse {
   user?: UserLogin;
@@ -27,6 +31,26 @@ export interface UserDTO {
   roles?: string;
   age?: number;
   avatarUrl?: string;
+  bio?: string;
+}
+
+export interface UserProfile {
+  id: string;
+  username: string;
+  email: string;
+  fullName?: string;
+  phone?: string;
+  bio?: string;
+  avatarUrl?: string;
+  role?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface UpdateProfileRequest {
+  fullName?: string;
+  phone?: string;
+  bio?: string;
 }
 
 export interface RegisterRequest {

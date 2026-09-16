@@ -2,7 +2,7 @@
 title: 'Story 1.3: User Profile Management & Avatar Upload via MinIO'
 type: 'feature'
 created: '2026-09-14'
-status: 'in-progress'
+status: 'done'
 baseline_commit: '67d06b65ce1dbf2c7d5f8ebde4ffc62cffbcf9e3'
 route: 'dispatch'
 review_loop_iteration: 0
@@ -69,15 +69,15 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `backend/src/main/java/com/newsroom/model/User.java` -- Bổ sung trường `private String bio;` vào document User.
-- [ ] `backend/src/main/java/com/newsroom/enums/ErrorCode.java` -- Bổ sung mã lỗi `FILE_TOO_LARGE(1201)`, `FILE_INVALID_TYPE(1202)`, `BIO_TOO_LONG(1203)`.
-- [ ] `backend/src/main/java/com/newsroom/dto/user/` -- Tạo `UserProfileResponse` và `UpdateProfileRequest`.
-- [ ] `backend/src/main/java/com/newsroom/service/IUserService.java` & `UserServiceImplement.java` -- Hiện thực hóa `getCurrentUserProfile`, `updateCurrentUserProfile`, `uploadAvatar`.
-- [ ] `backend/src/main/java/com/newsroom/controller/UserController.java` -- Xây dựng controller `/api/v1/user` với các endpoint: `GET /profile`, `PUT /profile`, `POST /avatar`.
-- [ ] `backend/src/test/java/com/newsroom/service/user/UserServiceProfileTest.java` -- Viết bộ unit test kiểm thử các ca thành công và biên (bio quá dài, file quá lớn, sai định dạng).
-- [ ] `frontend/src/lib/userApi.ts` & `frontend/src/types/backend.ts` -- Khai báo kiểu dữ liệu và API service profile.
-- [ ] `frontend/src/app/settings/profile/page.tsx` -- Xây dựng trang cài đặt tài khoản: form chỉnh sửa họ tên, bio (bộ đếm ký tự), phone, và component upload avatar kèm preview.
-- [ ] `frontend/src/components/DropdownMenu.tsx` -- Cập nhật dữ liệu thật từ `user`, link Settings trỏ về `/settings/profile`.
+- [x] `backend/src/main/java/com/newsroom/model/User.java` -- Bổ sung trường `private String bio;` vào document User.
+- [x] `backend/src/main/java/com/newsroom/enums/ErrorCode.java` -- Bổ sung mã lỗi `FILE_TOO_LARGE(1201)`, `FILE_INVALID_TYPE(1202)`, `BIO_TOO_LONG(1203)`.
+- [x] `backend/src/main/java/com/newsroom/dto/user/` -- Tạo `UserProfileResponse` và `UpdateProfileRequest`.
+- [x] `backend/src/main/java/com/newsroom/service/IUserService.java` & `UserServiceImplement.java` -- Hiện thực hóa `getCurrentUserProfile`, `updateCurrentUserProfile`, `uploadAvatar`.
+- [x] `backend/src/main/java/com/newsroom/controller/UserController.java` -- Xây dựng controller `/api/v1/user` với các endpoint: `GET /profile`, `PUT /profile`, `POST /avatar`.
+- [x] `backend/src/test/java/com/newsroom/service/user/UserServiceProfileTest.java` -- Viết bộ unit test kiểm thử các ca thành công và biên (bio quá dài, file quá lớn, sai định dạng).
+- [x] `frontend/src/lib/userApi.ts` & `frontend/src/types/backend.ts` -- Khai báo kiểu dữ liệu và API service profile.
+- [x] `frontend/src/app/settings/profile/page.tsx` -- Xây dựng trang cài đặt tài khoản: form chỉnh sửa họ tên, bio (bộ đếm ký tự), phone, và component upload avatar kèm preview.
+- [x] `frontend/src/components/DropdownMenu.tsx` -- Cập nhật dữ liệu thật từ `user`, link Settings trỏ về `/settings/profile`.
 
 **Acceptance Criteria:**
 - Given người dùng đã đăng nhập, when truy cập `/settings/profile`, then các trường họ tên, email (disabled), username (disabled), phone, bio và ảnh đại diện hiện tại được hiển thị đầy đủ.
@@ -86,7 +86,16 @@ context:
 - Given người dùng sửa họ tên và bio (≤ 500 ký tự), when bấm "Lưu thay đổi", then thông tin được cập nhật vào MongoDB và hiển thị thông báo thành công.
 - Given người dùng mở Dropdown Menu ở Header, then avatar, tên và email của chính người dùng được hiển thị chính xác thay vì dữ liệu mock.
 
+### Review Findings
+- [x] [Review][Patch] Fix potential StringIndexOutOfBoundsException & NPE in MinioServiceImplement.formatFileName [backend/src/main/java/com/newsroom/service/implement/MinioServiceImplement.java:272]
+- [x] [Review][Patch] Sanitize and validate fullName to prevent whitespace-only blank names, add bounds for phone [backend/src/main/java/com/newsroom/dto/user/UpdateProfileRequest.java:14]
+- [x] [Review][Patch] Synchronize updated user profile and avatarUrl into localStorage on client state update [frontend/src/app/settings/profile/page.tsx:121]
+
 ## Implementation Notes
+- Đã hoàn thành toàn bộ mã nguồn backend và frontend cho Story 1.3.
+- Đã khắc phục 2 lỗi login & refresh cookie (lỗi mật khẩu hash, lỗi ResponseCookie secure cản trở HTTP localhost, sửa defaultValue và exception của refresh token, sửa lỗi logout deactivate user, sửa findFirstByPhone chống crash trùng số điện thoại).
+- Đã chạy unit test `UserServiceProfileTest` (7/7 tests passed).
+- Đã chạy build `npm run build` frontend Next.js thành công 100%.
 
 ## Spec Change Log
 

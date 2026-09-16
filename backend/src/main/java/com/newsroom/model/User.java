@@ -38,6 +38,8 @@ public class User {
     @Field(name = "avatar_url")
     private String avatarUrl;
 
+    private String bio;
+
     private String role;
 
     @Builder.Default
