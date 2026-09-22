@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direction 2: Editorial Card — NewsRoom</title>
+  <!--
+    Design Direction 2: Editorial Card (News-First Modern Editorial)
+    Colors:
+      --primary: #FF6600 (Cam điểm nhấn hành động)
+      --secondary: #0F172A (Navy đậm lịch lãm cho tiêu đề & thương hiệu)
+      --journalist-badge: #1D4ED8 (Xanh Royal uy tín nhà báo)
+      --surface: #FFFFFF
+      --bg: #F1F5F9 (Slate-100 dịu mắt)
+      --border: #E2E8F0
+      --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.06), 0 2px 4px -2px rgba(0,0,0,0.04)
+  -->
+  <style>
+    :root {
+      --primary: #FF6600;
+      --primary-hover: #E05A00;
+      --primary-light: #FFF7ED;
+      --secondary: #0F172A;
+      --journalist-badge: #1D4ED8;
+      --journalist-bg: #EFF6FF;
+      --journalist-border: #BFDBFE;
+      --surface: #FFFFFF;
+      --bg: #F1F5F9;
+      --border: #E2E8F0;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --text-sub: #94A3B8;
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-card: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Rationale Header */
+    .rationale-bar {
+      background: #0F172A;
+      color: #F8FAFC;
+      padding: 12px 24px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1E293B;
+    }
+    .rationale-badge {
+      background: var(--journalist-badge);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      margin-right: 8px;
+    }
+    .view-toggle { display: flex; gap: 6px; }
+    .view-btn {
+      background: #1E293B;
+      color: #94A3B8;
+      border: 1px solid #334155;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .view-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Top Navbar */
+    .top-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 10px 24px;
+    }
+    .header-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-size: 21px;
+      font-weight: 900;
+      color: var(--secondary);
+      letter-spacing: -0.5px;
+    }
+    .brand-mark {
+      background: var(--primary);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .nav-search {
+      flex: 1;
+      max-width: 420px;
+      margin: 0 32px;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      padding: 8px 14px 8px 36px;
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 14px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+      background: white;
+    }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-sub);
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .btn-create-post-top {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Layout Frame */
+    .main-layout {
+      max-width: 1160px;
+      margin: 24px auto;
+      display: grid;
+      grid-template-columns: 220px 1fr 300px;
+      gap: 24px;
+      padding: 0 16px;
+      transition: max-width 0.3s;
+    }
+    body.mobile-view .main-layout {
+      max-width: 430px;
+      grid-template-columns: 1fr;
+      padding: 0 0 60px 0;
+      margin: 12px auto;
+    }
+    body.mobile-view .side-nav,
+    body.mobile-view .side-widget {
+      display: none;
+    }
+
+    /* Left Nav */
+    .side-nav {
+      position: sticky;
+      top: 80px;
+      height: fit-content;
+    }
+    .category-group {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .cat-title {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-sub);
+      padding: 6px 10px;
+      letter-spacing: 0.5px;
+    }
+    .cat-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .cat-link:hover, .cat-link.active {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* Feed Container */
+    .feed-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Quick Composer */
+    .composer-editorial {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 16px;
+      box-shadow: var(--shadow-card);
+    }
+    .composer-title-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 8px;
+    }
+    .composer-body-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      resize: none;
+      font-size: 14px;
+      min-height: 56px;
+      color: var(--text-main);
+      font-family: inherit;
+    }
+
+    /* Editorial Post Card */
+    .card-editorial {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+    }
+    .card-editorial.journalist-card {
+      border-color: var(--journalist-border);
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAFCFF 100%);
+    }
+    .card-badge-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .tag-category {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .tag-verified-source {
+      background: var(--journalist-bg);
+      color: var(--journalist-badge);
+      border: 1px solid var(--journalist-border);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .article-headline {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--secondary);
+      line-height: 1.4;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .article-headline:hover {
+      color: var(--primary);
+    }
+    .article-lead {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .article-visual-hero {
+      border-radius: var(--radius-sm);
+      height: 220px;
+      background: #E2E8F0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748B;
+      font-weight: 600;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .meta-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid #F1F5F9;
+      font-size: 13px;
+    }
+    .byline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-main);
+      font-weight: 600;
+    }
+    .byline-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #1D4ED8;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+    .meta-time {
+      color: var(--text-sub);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+    .interaction-counters {
+      display: flex;
+      gap: 16px;
+      color: var(--text-muted);
+    }
+    .counter-btn {
+      background: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .counter-btn:hover {
+      color: var(--primary);
+    }
+
+    /* Right Widget */
+    .side-widget {
+      position: sticky;
+      top: 80px;
+      height: fit-content;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .editorial-ad-box {
+      background: #FFFBEB;
+      border: 1px dashed #FCD34D;
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+    .ad-header-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #B45309;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .ad-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 6px;
+    }
+    .ad-desc {
+      font-size: 13px;
+      color: #78350F;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+    .ad-cta {
+      display: inline-block;
+      background: #B45309;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* Mobile Bottom Nav */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      padding: 8px 16px;
+      z-index: 100;
+      justify-content: space-around;
+    }
+    body.mobile-view .mobile-bottom-nav { display: flex; }
+    .mob-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 11px;
+    }
+    .mob-item.active { color: var(--primary); font-weight: 700; }
+  </style>
+</head>
+<body>
+
+  <!-- Rationale Header -->
+  <div class="rationale-bar">
+    <div>
+      <span class="rationale-badge">Hướng 2: Editorial Card</span>
+      <strong>News-First Modern Editorial</strong> — Tạp chí tin tức sang trọng. Phân cấp tiêu đề rõ ràng, card nhà báo có viền xanh Royal uy tín, trải nghiệm đọc sâu và tin cậy.
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" onclick="setView('desktop')">Màn hình Máy tính</button>
+      <button class="view-btn" onclick="setView('mobile')">Màn hình Di động</button>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="top-header">
+    <div class="header-inner">
+      <a href="#" class="brand">
+        News<span class="brand-mark">Room</span>
+      </a>
+      <div class="nav-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" placeholder="Tìm kiếm tin nóng, chủ đề, nhà báo...">
+      </div>
+      <div class="header-actions">
+        <button class="btn-create-post-top">✍️ Viết bài</button>
+        <div class="byline-avatar" style="background:#FF6600;">H</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-layout">
+
+    <!-- LEFT NAV -->
+    <aside class="side-nav">
+      <div class="category-group">
+        <div class="cat-title">Luồng tin chính</div>
+        <a href="#" class="cat-link active">📰 Tất cả tin tức</a>
+        <a href="#" class="cat-link">🎖️ Chuyên mục Nhà báo</a>
+        <a href="#" class="cat-link">👥 Tin từ Cộng đồng</a>
+        <a href="#" class="cat-link">⭐ Đang theo dõi</a>
+      </div>
+      <div class="category-group">
+        <div class="cat-title">Chủ đề quan tâm</div>
+        <a href="#" class="cat-link">🚦 Giao thông đô thị</a>
+        <a href="#" class="cat-link">💼 Kinh tế - Thị trường</a>
+        <a href="#" class="cat-link">📱 Công nghệ số</a>
+        <a href="#" class="cat-link">⚖️ Pháp luật & Đời sống</a>
+      </div>
+    </aside>
+
+    <!-- FEED -->
+    <main class="feed-container">
+
+      <!-- Composer -->
+      <div class="composer-editorial">
+        <input type="text" class="composer-title-input" placeholder="Tiêu đề thông tin bạn muốn cập nhật...">
+        <textarea class="composer-body-input" placeholder="Nêu chi tiết nội dung sự việc, thời gian, địa điểm..."></textarea>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #F1F5F9; padding-top: 10px;">
+          <span style="font-size: 13px; color: var(--text-sub);">📎 Đính kèm ảnh / video xác thực</span>
+          <button class="btn-create-post-top" style="padding: 6px 16px; font-size: 13px;">Gửi duyệt tin</button>
+        </div>
+      </div>
+
+      <!-- CARD 1: JOURNALIST ARTICLE -->
+      <article class="card-editorial journalist-card">
+        <div class="card-badge-line">
+          <span class="tag-category">THỜI SỰ • GIAO THÔNG ĐÔ THỊ</span>
+          <span class="tag-verified-source">
+            ✓ Phóng viên TTXVN
+          </span>
+        </div>
+        <h2 class="article-headline">Hà Nội điều chỉnh nút giao Ngã Tư Sở từ 6h ngày 15/9: Những lưu ý sống còn người dân cần biết</h2>
+        <p class="article-lead">Nhằm giải quyết triệt để nút thắt cổ chai kéo dài, lực lượng CSGT sẽ bố trí 4 chốt phân luồng từ xa tại Trường Chinh, Láng và Tây Sơn. Các phương tiện không tuân thủ biển báo tạm thời sẽ được nhắc nhở trong 3 ngày đầu...</p>
+        
+        <div class="article-visual-hero">
+          📸 [Infographic sơ đồ làn xe và lộ trình thay thế]
+        </div>
+
+        <div class="meta-footer">
+          <div class="byline">
+            <div class="byline-avatar">LB</div>
+            <span>Lê Bình</span>
+            <span class="meta-time">• 25 phút trước</span>
+          </div>
+          <div class="interaction-counters">
+            <button class="counter-btn">👍 512</button>
+            <button class="counter-btn">💬 94 bình luận</button>
+            <button class="counter-btn">🔄 Chia sẻ</button>
+            <button class="counter-btn" style="color: #94A3B8;">🚩</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 2: COMMUNITY EYEWITNESS REPORT -->
+      <article class="card-editorial">
+        <div class="card-badge-line">
+          <span class="tag-category" style="color: #64748B;">CỘNG ĐỒNG • CẢNH BÁO NHANH</span>
+        </div>
+        <h3 class="article-headline" style="font-size: 16px;">Mưa dông lớn gây đổ cây chắn ngang đường Hoàng Hoa Thám</h3>
+        <p class="article-lead">Một cây xà cừ lớn vừa gãy đổ đoạn gần dốc Tam Đa, may mắn không ai bị thương nhưng xe ô tô hiện không thể qua lại. Anh em đi lối Thụy Khuê tránh nhé!</p>
+        <div class="meta-footer">
+          <div class="byline">
+            <div class="byline-avatar" style="background:#64748B;">HA</div>
+            <span>Hoàng Anh (Cư dân Ba Đình)</span>
+            <span class="meta-time">• 1 giờ trước</span>
+          </div>
+          <div class="interaction-counters">
+            <button class="counter-btn">👍 128</button>
+            <button class="counter-btn">💬 31 bình luận</button>
+            <button class="counter-btn">🔄 Chia sẻ</button>
+            <button class="counter-btn" style="color: #94A3B8;">🚩</button>
+          </div>
+        </div>
+      </article>
+
+    </main>
+
+    <!-- RIGHT WIDGET -->
+    <aside class="side-widget">
+      <!-- AD CARD -->
+      <div class="editorial-ad-box">
+        <div class="ad-header-label">Quảng cáo tài trợ</div>
+        <div class="ad-title">FPT Telecom - Gói cước Internet Doanh Nghiệp 1Gbps</div>
+        <div class="ad-desc">Băng thông quốc tế không giới hạn, cam kết bảo mật 99.9%. Tặng miễn phí Modem Wi-Fi 6 chuyên dụng.</div>
+        <a href="#" class="ad-cta">Đăng ký tư vấn</a>
+      </div>
+
+      <!-- TRENDING TOPICS -->
+      <div class="category-group">
+        <div class="cat-title">Chủ đề nổi bật</div>
+        <div style="padding: 6px 10px; font-size: 14px; font-weight: 700; color: var(--secondary);">#NgaTuSo</div>
+        <div style="padding: 6px 10px; font-size: 14px; font-weight: 700; color: var(--secondary);">#TyGiaUSD</div>
+        <div style="padding: 6px 10px; font-size: 14px; font-weight: 700; color: var(--secondary);">#MuaBaoMienBac</div>
+      </div>
+    </aside>
+
+  </div>
+
+  <nav class="mobile-bottom-nav">
+    <a href="#" class="mob-item active">📰 <span>Tin tức</span></a>
+    <a href="#" class="mob-item">🎖️ <span>Nhà báo</span></a>
+    <a href="#" class="mob-item">✍️ <span>Đăng tin</span></a>
+    <a href="#" class="mob-item">🔔 <span>Thông báo</span></a>
+    <a href="#" class="mob-item">👤 <span>Hồ sơ</span></a>
+  </nav>
+
+  <script>
+    function setView(view) {
+      const btns = document.querySelectorAll('.view-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      if (view === 'mobile') {
+        document.body.classList.add('mobile-view');
+        btns[1].classList.add('active');
+      } else {
+        document.body.classList.remove('mobile-view');
+        btns[0].classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>

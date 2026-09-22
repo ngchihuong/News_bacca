@@ -1,138 +1,270 @@
 "use client";
 
-import { QueryClient, useMutation } from "@tanstack/react-query";
-import { App } from "antd";
+import { useState, useEffect, Suspense } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { App, Spin } from "antd";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { IoWarningOutline } from "react-icons/io5";
-import { useState } from "react";
 import * as authApiClient from "@/lib/authApi";
-import { AuthResponse, BaseOutput } from "@/types/backend";
 import { useAppContext } from "@/context/AuthContext";
-import { set } from "date-fns";
 
 type LoginFormData = {
   username: string;
   password: string;
 };
-export default function login() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const queryClient = new QueryClient();
+
+function LoginForm() {
+  const queryClient = useQueryClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { notification } = App.useApp();
-  const {setUser, setIsAuthenticated, setIsAdmin} = useAppContext();
-  
+  const { isAuthenticated, isAdmin, setUser, setIsAuthenticated, setIsAdmin } =
+    useAppContext();
+  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
+
+  const emailParam = searchParams.get("email") || "";
+
+  // GuestGuard: Redirect if already logged in
+  useEffect(() => {
+    if (isAuthenticated) {
+      notification.info({
+        message: "Thông báo",
+        description: "Bạn đã đăng nhập hệ thống.",
+        duration: 3,
+        placement: "topRight",
+      });
+      if (isAdmin) {
+        router.replace("/admin");
+      } else {
+        router.replace("/");
+      }
+    } else {
+      setIsCheckingAuth(false);
+    }
+  }, [isAuthenticated, isAdmin, router, notification]);
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm<LoginFormData>();
+  } = useForm<LoginFormData>({
+    defaultValues: {
+      username: emailParam,
+      password: "",
+    },
+  });
+
+  useEffect(() => {
+    if (emailParam) {
+      setValue("username", emailParam);
+    }
+  }, [emailParam, setValue]);
+
   const mutation = useMutation({
-    mutationFn: (data: { username: string; password: string }) =>
-      authApiClient.login(data.username, data.password),
-    onSuccess: async (data: any) => {
+    mutationFn: (data: LoginFormData) =>
+      authApiClient.login(data.username.trim(), data.password),
+    onSuccess: (res: any) => {
       notification.success({
-        message: "Login Successful",
-        description: data.message,
-        duration: 5,
+        message: "Đăng nhập thành công",
+        description: "Chào mừng bạn quay trở lại NewsRoom!",
+        duration: 3,
         placement: "topRight",
       });
-      if (data.data) {
-        setUser(data.data.user);
-        setIsAuthenticated(true);
 
-        localStorage.setItem("access_token", data!.data!.access_token!);
-        localStorage.setItem("user", JSON.stringify(data!.data!.user!));
+      const authData = res?.data?.access_token ? res.data : (res?.data?.data || res?.data || res);
+      const userData = authData?.user;
+      const accessToken = authData?.access_token;
+
+      if (accessToken) {
+        localStorage.setItem("access_token", accessToken);
       }
-      const role = data?.data?.user?.role;
-      if (role === "ADMIN") {
-        setIsAdmin(true);
-        router.push("/admin");
-      }else router.push("/");
+      if (userData) {
+        setUser(userData);
+        setIsAuthenticated(true);
+        localStorage.setItem("user", JSON.stringify(userData));
+
+        const role = userData?.role;
+        if (role === "ADMIN" || role === "ROLE_ADMIN") {
+          setIsAdmin(true);
+          router.push("/admin");
+        } else {
+          setIsAdmin(false);
+          router.push("/");
+        }
+      } else if (accessToken) {
+        setIsAuthenticated(true);
+        router.push("/");
+      }
 
       queryClient.clear();
     },
-    onError: (error: Error) => {
+    onError: (error: any) => {
+      const errorMsg =
+        error?.response?.data?.errors?.[0] ||
+        error?.response?.data?.message ||
+        error?.message ||
+        "Đăng nhập thất bại. Vui lòng kiểm tra lại email hoặc mật khẩu.";
       notification.error({
-        message: "Failed Sign-in!",
-        description: error.message,
+        message: "Đăng nhập thất bại",
+        description: errorMsg,
         duration: 5,
         placement: "topRight",
       });
     },
   });
-  const onSubmit = handleSubmit((data: any) => {
+
+  const onSubmit = handleSubmit((data: LoginFormData) => {
     mutation.mutate(data);
   });
+
+  if (isCheckingAuth && isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <Spin size="large" tip="Đang kiểm tra phiên đăng nhập..." />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-      <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors">
+      <div className="max-w-md w-full bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700">
+        {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">
-            <span className="text-primary">News</span>
-            <span className="text-secondary">Room</span>
-          </h1>
-          <p className="text-gray-600 mt-2">Sign-in</p>
+          <Link href="/" className="inline-block">
+            <h1 className="text-3xl font-extrabold tracking-tight">
+              <span className="text-[#FF6600]">News</span>
+              <span className="text-[#13357B] dark:text-blue-400">Room</span>
+            </h1>
+          </Link>
+          <h2 className="mt-4 text-xl font-bold text-slate-900 dark:text-white">
+            Đăng nhập tài khoản
+          </h2>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            Khám phá dòng tin mới nhất và chia sẻ góc nhìn của bạn
+          </p>
         </div>
 
-        <form className="space-y-6" onSubmit={onSubmit}>
+        {/* Form */}
+        <form className="space-y-5" onSubmit={onSubmit}>
           <div>
             <label
               htmlFor="username"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-1.5"
             >
-              Email
+              Email hoặc Số điện thoại <span className="text-red-500">*</span>
             </label>
             <input
               id="username"
               type="text"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-1"
-              placeholder="Enter your username"
-              {...register("username", { required: "Username is required" })}
+              className={`w-full px-4 py-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border ${
+                errors.username
+                  ? "border-red-500 focus:ring-red-400"
+                  : "border-slate-300 dark:border-slate-600 focus:border-[#FF6600] focus:ring-[#FF6600]/20"
+              } rounded-xl shadow-sm focus:outline-none focus:ring-2 transition-all`}
+              placeholder="Nhập email hoặc số điện thoại"
+              {...register("username", {
+                required: "Vui lòng nhập email hoặc số điện thoại",
+              })}
             />
             {errors.username && (
-              <span className="error mt-2 text-red-700 flex flex-row gap-x-1">
-                <span className="flex items-center space-x-4">
-                  <IoWarningOutline className=" text-2xl align-text-bottom" />
-                  {errors.username.message}
-                </span>
-              </span>
+              <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1 font-medium">
+                <IoWarningOutline className="text-sm shrink-0" />
+                {errors.username.message}
+              </p>
             )}
           </div>
 
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-1.5"
             >
-              Password
+              Mật khẩu <span className="text-red-500">*</span>
             </label>
             <input
               id="password"
               type="password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-1"
-              placeholder="Enter your password"
-              {...register("password", { required: "Password is required" })}
+              className={`w-full px-4 py-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border ${
+                errors.password
+                  ? "border-red-500 focus:ring-red-400"
+                  : "border-slate-300 dark:border-slate-600 focus:border-[#FF6600] focus:ring-[#FF6600]/20"
+              } rounded-xl shadow-sm focus:outline-none focus:ring-2 transition-all`}
+              placeholder="Nhập mật khẩu"
+              {...register("password", {
+                required: "Vui lòng nhập mật khẩu",
+              })}
             />
             {errors.password && (
-              <span className="error mt-2 text-red-700 flex flex-row gap-x-1">
-                <span className="flex items-center space-x-4">
-                  <IoWarningOutline className=" text-2xl align-text-bottom" />
-                  {errors.password.message}
-                </span>
-              </span>
+              <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1 font-medium">
+                <IoWarningOutline className="text-sm shrink-0" />
+                {errors.password.message}
+              </p>
             )}
           </div>
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={mutation.isPending}
+            className="w-full bg-[#FF6600] hover:bg-[#FF6600]/90 text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center mt-2"
           >
-            {loading ? "Logging in..." : "Login"}
+            {mutation.isPending ? (
+              <span className="flex items-center gap-2">
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                  ></path>
+                </svg>
+                Đang đăng nhập...
+              </span>
+            ) : (
+              "Đăng nhập"
+            )}
           </button>
         </form>
+
+        {/* Footer */}
+        <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
+          Chưa có tài khoản?{" "}
+          <Link
+            href="/register"
+            className="font-semibold text-[#FF6600] hover:underline"
+          >
+            Đăng ký ngay
+          </Link>
+        </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+          <Spin size="large" />
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }

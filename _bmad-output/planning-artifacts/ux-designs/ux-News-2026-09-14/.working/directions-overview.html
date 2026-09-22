@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NewsRoom — So sánh 3 định hướng thiết kế UX/UI</title>
+  <style>
+    :root {
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-family);
+      background: #0B0F19;
+      color: #F3F4F6;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    header {
+      background: #111827;
+      border-bottom: 1px solid #1F2937;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-badge {
+      background: #FF6600;
+      color: white;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .tabs-nav {
+      display: flex;
+      gap: 8px;
+    }
+    .tab-item {
+      background: #1F2937;
+      color: #9CA3AF;
+      border: 1px solid #374151;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .tab-item:hover {
+      background: #374151;
+      color: #FFFFFF;
+    }
+    .tab-item.active {
+      background: #FF6600;
+      color: #FFFFFF;
+      border-color: #FF6600;
+    }
+    .links-direct {
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+    }
+    .links-direct a {
+      color: #38BDF8;
+      text-decoration: none;
+    }
+    .links-direct a:hover {
+      text-decoration: underline;
+    }
+    .preview-frame-container {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      position: relative;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-title">
+      NewsRoom UX Exploration
+      <span class="brand-badge">Coaching Mode</span>
+    </div>
+
+    <div class="tabs-nav">
+      <button class="tab-item active" onclick="loadDirection('direction-modern-stream.html', this)">
+        <span>📱 Hướng 1: Modern Stream</span>
+        <small style="opacity: 0.8;">(Social-First / Threads / X)</small>
+      </button>
+      <button class="tab-item" onclick="loadDirection('direction-editorial-card.html', this)">
+        <span>📰 Hướng 2: Editorial Card</span>
+        <small style="opacity: 0.8;">(Tạp chí báo chí / Substack)</small>
+      </button>
+      <button class="tab-item" onclick="loadDirection('direction-compact-community.html', this)">
+        <span>⚡ Hướng 3: Compact Community</span>
+        <small style="opacity: 0.8;">(Mật độ tin cao / Reddit)</small>
+      </button>
+    </div>
+
+    <div class="links-direct">
+      <span>Mở tab riêng:</span>
+      <a href="direction-modern-stream.html" target="_blank">Hướng 1</a> |
+      <a href="direction-editorial-card.html" target="_blank">Hướng 2</a> |
+      <a href="direction-compact-community.html" target="_blank">Hướng 3</a>
+    </div>
+  </header>
+
+  <div class="preview-frame-container">
+    <iframe id="preview-iframe" src="direction-modern-stream.html"></iframe>
+  </div>
+
+  <script>
+    function loadDirection(file, element) {
+      document.getElementById('preview-iframe').src = file;
+      const tabs = document.querySelectorAll('.tab-item');
+      tabs.forEach(t => t.classList.remove('active'));
+      element.classList.add('active');
+    }
+  </script>
+</body>
+</html>

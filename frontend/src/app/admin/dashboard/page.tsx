@@ -43,8 +43,8 @@ export default function AdminDashboard() {
         <AdminNav />
         <div className="flex-1 ml-64 p-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-            <p className="text-gray-600 mt-1">Welcome to NewsRoom Admin Panel</p>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-slate-100">Dashboard</h1>
+            <p className="text-gray-600 dark:text-slate-400 mt-1">Welcome to NewsRoom Admin Panel</p>
           </div>
 
           {loading ? (
@@ -56,11 +56,11 @@ export default function AdminDashboard() {
               {statCards.map((card) => {
                 const Icon = card.icon;
                 return (
-                  <div key={card.title} className="bg-white rounded-lg shadow-md p-6">
+                  <div key={card.title} className="bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 rounded-lg shadow-md p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-gray-600 text-sm">{card.title}</p>
-                        <p className="text-3xl font-bold text-gray-800 mt-2">{card.value}</p>
+                        <p className="text-gray-600 dark:text-slate-400 text-sm">{card.title}</p>
+                        <p className="text-3xl font-bold text-gray-800 dark:text-slate-100 mt-2">{card.value}</p>
                       </div>
                       <div className={`${card.color} p-4 rounded-lg`}>
                         <Icon className="text-white text-2xl" />
@@ -72,8 +72,8 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+          <div className="mt-8 bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100 mb-4">Quick Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <a href="/admin/news/create" className="btn-primary text-center">
                 Create New Article

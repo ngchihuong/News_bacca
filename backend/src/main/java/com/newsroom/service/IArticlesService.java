@@ -12,4 +12,5 @@ public interface IArticlesService {
     Page<ArticleDTO> getArticleBySlug(String slug, Pageable pageable);
     void deleteArticle(String id);
     Page<ArticleDTO> findAll(Pageable pageable);
+    Page<ArticleDTO> getArticlesByAuthor(String authorId, Pageable pageable);
 }

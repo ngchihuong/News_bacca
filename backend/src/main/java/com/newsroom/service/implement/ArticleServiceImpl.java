@@ -50,4 +50,9 @@ public class ArticleServiceImpl implements IArticlesService {
     public Page<ArticleDTO> findAll(Pageable pageable) {
         return articleRepository.findAll(pageable).map(articleMapper::toDTO);
     }
+
+    @Override
+    public Page<ArticleDTO> getArticlesByAuthor(String authorId, Pageable pageable) {
+        return articleRepository.findByAuthorIdOrderByCreatedAtDesc(authorId, pageable).map(articleMapper::toDTO);
+    }
 }

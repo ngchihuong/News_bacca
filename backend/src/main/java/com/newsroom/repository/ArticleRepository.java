@@ -7,4 +7,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ArticleRepository extends MongoRepository<Article, String> {
     Page<Article> findBySlugContainingIgnoreCase(String slug, Pageable pageable);
+    Page<Article> findByAuthorIdOrderByCreatedAtDesc(String authorId, Pageable pageable);
 }

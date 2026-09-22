@@ -18,8 +18,8 @@ export default function Sidebar({ trendingNews, categories }: SidebarProps) {
       <AdContainer position="SIDEBAR_TOP" />
       {/* Social Follow */}
       <div>
-        <div className="bg-gray-100 py-2 px-4 mb-3">
-          <h3 className="text-lg font-bold">Follow Us</h3>
+        <div className="bg-gray-100 dark:bg-slate-800 py-2 px-4 mb-3 rounded">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Follow Us</h3>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <a href="#" className="flex items-center justify-center py-3 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors">
@@ -39,18 +39,18 @@ export default function Sidebar({ trendingNews, categories }: SidebarProps) {
 
       {/* Newsletter */}
       <div>
-        <div className="bg-gray-100 py-2 px-4 mb-3">
-          <h3 className="text-lg font-bold">Newsletter</h3>
+        <div className="bg-gray-100 dark:bg-slate-800 py-2 px-4 mb-3 rounded">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Newsletter</h3>
         </div>
-        <div className="bg-gray-50 p-4 rounded">
-          <p className="text-sm text-gray-600 mb-3">
+        <div className="bg-gray-50 dark:bg-slate-800/80 p-4 rounded">
+          <p className="text-sm text-gray-600 dark:text-slate-400 mb-3">
             Subscribe to our newsletter to get the latest news delivered to your inbox.
           </p>
           <div className="flex">
             <input
               type="email"
               placeholder="Your Email"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-l focus:outline-none focus:border-primary"
+              className="flex-1 px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-l focus:outline-none focus:border-primary"
             />
             <button className="bg-primary text-white px-4 py-2 rounded-r hover:bg-primary/90 transition-colors">
               Subscribe
@@ -62,8 +62,8 @@ export default function Sidebar({ trendingNews, categories }: SidebarProps) {
       {/* Trending News */}
       {trendingNews && trendingNews.length > 0 && (
         <div>
-          <div className="bg-gray-100 py-2 px-4 mb-3">
-            <h3 className="text-lg font-bold">Trending</h3>
+          <div className="bg-gray-100 dark:bg-slate-800 py-2 px-4 mb-3 rounded">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Trending</h3>
           </div>
           <div className="space-y-3">
             {trendingNews.slice(0, 5).map((item) => (
@@ -76,8 +76,8 @@ export default function Sidebar({ trendingNews, categories }: SidebarProps) {
                     className="object-cover rounded"
                   />
                 </div>
-                <div className="flex-1 bg-gray-50 p-3 rounded">
-                  <div className="text-xs text-gray-600 mb-1">
+                <div className="flex-1 bg-gray-50 dark:bg-slate-800/80 p-3 rounded">
+                  <div className="text-xs text-gray-600 dark:text-slate-400 mb-1">
                     <Link href={`/category/${item.categoryId}`} className="hover:text-primary">
                       {item.categoryName}
                     </Link>
@@ -85,7 +85,7 @@ export default function Sidebar({ trendingNews, categories }: SidebarProps) {
                     <span>{new Date(item.publishedAt).toLocaleDateString()}</span>
                   </div>
                   <Link href={`/news/${item.slug}`}>
-                    <h5 className="text-sm font-semibold hover:text-primary transition-colors line-clamp-2">
+                    <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100 hover:text-primary transition-colors line-clamp-2">
                       {item.title}
                     </h5>
                   </Link>
@@ -98,15 +98,15 @@ export default function Sidebar({ trendingNews, categories }: SidebarProps) {
 
       {/* Tags */}
       <div>
-        <div className="bg-gray-100 py-2 px-4 mb-3">
-          <h3 className="text-lg font-bold">Tags</h3>
+        <div className="bg-gray-100 dark:bg-slate-800 py-2 px-4 mb-3 rounded">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Tags</h3>
         </div>
         <div className="flex flex-wrap gap-2">
           {['Politics', 'Business', 'Technology', 'Sports', 'Health', 'Education', 'Science', 'Entertainment', 'Travel', 'Lifestyle'].map((tag) => (
             <Link
               key={tag}
               href={`/tag/${tag.toLowerCase()}`}
-              className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-primary hover:text-white hover:border-primary transition-colors"
+              className="px-3 py-1 text-sm border border-gray-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded hover:bg-primary hover:text-white hover:border-primary transition-colors"
             >
               {tag}
             </Link>

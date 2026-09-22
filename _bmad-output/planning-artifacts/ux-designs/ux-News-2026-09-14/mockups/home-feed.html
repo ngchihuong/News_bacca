@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direction 1: Modern Stream — NewsRoom</title>
+  <!--
+    Design Direction 1: Modern Stream (Social-First Minimalist)
+    Colors:
+      --primary: #FF6600 (Cam tin tức năng động)
+      --secondary: #13357B (Xanh navy uy tín)
+      --journalist-badge: #0284C7 (Sky blue badge xác thực)
+      --surface: #FFFFFF
+      --bg: #F8FAFC (Slate-50 thanh thoát)
+      --border: #E2E8F0
+      --text-main: #0F172A
+      --text-muted: #64748B
+  -->
+  <style>
+    :root {
+      --primary: #FF6600;
+      --primary-hover: #E05A00;
+      --primary-light: #FFF7ED;
+      --secondary: #13357B;
+      --journalist-badge: #0284C7;
+      --journalist-bg: #E0F2FE;
+      --ad-badge: #F59E0B;
+      --surface: #FFFFFF;
+      --bg: #F8FAFC;
+      --border: #E2E8F0;
+      --border-focus: #CBD5E1;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --text-sub: #94A3B8;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-full: 9999px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Rationale Banner */
+    .rationale-bar {
+      background: #0F172A;
+      color: #F8FAFC;
+      padding: 12px 24px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+    }
+    .rationale-badge {
+      background: var(--primary);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      margin-right: 8px;
+    }
+    .view-toggle {
+      display: flex;
+      gap: 6px;
+    }
+    .view-btn {
+      background: #1E293B;
+      color: #94A3B8;
+      border: 1px solid #334155;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .view-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Layout Frame */
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 260px minmax(520px, 640px) 300px;
+      gap: 24px;
+      padding: 20px 16px;
+      transition: max-width 0.3s ease;
+    }
+    body.mobile-view .app-container {
+      max-width: 430px;
+      grid-template-columns: 1fr;
+      padding: 0 0 60px 0;
+    }
+    body.mobile-view .sidebar-left,
+    body.mobile-view .sidebar-right {
+      display: none;
+    }
+
+    /* Left Sidebar */
+    .sidebar-left {
+      position: sticky;
+      top: 20px;
+      height: fit-content;
+    }
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px 24px;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), #FF8533);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 18px;
+    }
+    .logo-text {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--secondary);
+      letter-spacing: -0.5px;
+    }
+    .logo-tag {
+      color: var(--primary);
+    }
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.15s ease;
+    }
+    .nav-item a:hover {
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+    .nav-item.active a {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+    .btn-create-post-sidebar {
+      margin-top: 16px;
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: var(--radius-full);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255, 102, 0, 0.25);
+      transition: background 0.15s;
+    }
+    .btn-create-post-sidebar:hover {
+      background: var(--primary-hover);
+    }
+
+    /* Main Feed Area */
+    .feed-column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Tabs Header */
+    .feed-tabs-header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      display: flex;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(8px);
+      background: rgba(255, 255, 255, 0.95);
+    }
+    .feed-tab {
+      flex: 1;
+      padding: 14px 12px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .feed-tab:hover {
+      color: var(--text-main);
+      background: #F8FAFC;
+    }
+    .feed-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* Post Composer Card */
+    .composer-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .composer-header {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .user-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #CBD5E1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #334155;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .composer-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      resize: none;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--text-main);
+      padding: 8px 0;
+      min-height: 52px;
+    }
+    .composer-input::placeholder {
+      color: var(--text-sub);
+    }
+    .composer-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid #F1F5F9;
+      margin-top: 8px;
+    }
+    .composer-tools {
+      display: flex;
+      gap: 8px;
+    }
+    .tool-btn {
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      padding: 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tool-btn:hover {
+      background: var(--primary-light);
+    }
+    .btn-publish {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-publish:hover {
+      background: var(--primary-hover);
+    }
+
+    /* Feed Post Card */
+    .post-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.15s ease;
+    }
+    .post-card:hover {
+      border-color: var(--border-focus);
+    }
+    .post-card.journalist-post {
+      border-left: 3px solid var(--journalist-badge);
+    }
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .post-author-box {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .author-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .author-name-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .badge-journalist {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--journalist-bg);
+      color: var(--journalist-badge);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+    }
+    .badge-journalist svg {
+      width: 12px;
+      height: 12px;
+      fill: currentColor;
+    }
+    .badge-ad {
+      background: #FEF3C7;
+      color: #B45309;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .post-time {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+    .btn-more {
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+    }
+    .btn-more:hover {
+      background: #F1F5F9;
+      color: var(--text-main);
+    }
+
+    .post-content {
+      font-size: 15px;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      word-break: break-word;
+      line-height: 1.6;
+    }
+    .post-content p {
+      margin-bottom: 8px;
+    }
+    .post-image-box {
+      margin-top: 8px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: #E2E8F0;
+      border: 1px solid var(--border);
+    }
+    .post-image-box img {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 380px;
+      object-fit: cover;
+    }
+
+    .post-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid #F1F5F9;
+      margin-top: 6px;
+    }
+    .action-group {
+      display: flex;
+      gap: 4px;
+    }
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .action-btn:hover {
+      background: #F1F5F9;
+      color: var(--text-main);
+    }
+    .action-btn.active-like {
+      color: #EF4444;
+    }
+    .action-btn.active-like:hover {
+      background: #FEE2E2;
+    }
+    .action-btn.active-like svg {
+      fill: #EF4444;
+    }
+    .action-btn svg {
+      width: 17px;
+      height: 17px;
+      fill: currentColor;
+    }
+
+    /* Right Sidebar */
+    .sidebar-right {
+      position: sticky;
+      top: 20px;
+      height: fit-content;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .card-widget {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .widget-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .trending-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #F8FAFC;
+    }
+    .trending-item:last-child {
+      border-bottom: none;
+    }
+    .trending-tag {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      text-decoration: none;
+    }
+    .trending-tag:hover {
+      color: var(--primary);
+    }
+    .trending-count {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .journalist-recommend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+    }
+    .btn-follow {
+      margin-left: auto;
+      background: var(--secondary);
+      color: white;
+      border: none;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-follow:hover {
+      opacity: 0.9;
+    }
+
+    /* Mobile Bottom Navigation */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      padding: 8px 16px;
+      z-index: 100;
+      justify-content: space-around;
+    }
+    body.mobile-view .mobile-bottom-nav {
+      display: flex;
+    }
+    .mob-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 11px;
+      gap: 4px;
+    }
+    .mob-nav-item.active {
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .mob-nav-item svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Rationale & Personality bar -->
+  <div class="rationale-bar">
+    <div>
+      <span class="rationale-badge">Hướng 1: Modern Stream</span>
+      <strong>Social-First Minimalist</strong> — Lấy cảm hứng từ Threads & Twitter hiện đại. Đường nét tinh giản, tập trung đọc tin nhanh, huy hiệu Nhà Báo nổi bật bằng Sky Blue.
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" onclick="setView('desktop')">Màn hình Máy tính</button>
+      <button class="view-btn" onclick="setView('mobile')">Màn hình Di động</button>
+    </div>
+  </div>
+
+  <div class="app-container">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar-left">
+      <div class="logo-box">
+        <div class="logo-icon">N</div>
+        <div class="logo-text">News<span class="logo-tag">Room</span></div>
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item active">
+          <a href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Trang chủ Feed
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            Nhà báo xác thực
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            Đang theo dõi
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+            Thông báo
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            Trang cá nhân
+          </a>
+        </li>
+      </ul>
+      <button class="btn-create-post-sidebar">+ Đăng tin mới</button>
+    </aside>
+
+    <!-- CENTER FEED COLUMN -->
+    <main class="feed-column">
+
+      <!-- TABS -->
+      <div class="feed-tabs-header">
+        <div class="feed-tab active">Dành cho bạn</div>
+        <div class="feed-tab">Tin Nhà Báo</div>
+        <div class="feed-tab">Đang Follow</div>
+      </div>
+
+      <!-- COMPOSER -->
+      <div class="composer-card">
+        <div class="composer-header">
+          <div class="user-avatar" style="background:#FFE4D6; color:var(--primary);">H</div>
+          <textarea class="composer-input" placeholder="Bạn có tin tức gì nóng muốn chia sẻ hôm nay?"></textarea>
+        </div>
+        <div class="composer-actions">
+          <div class="composer-tools">
+            <button class="tool-btn" title="Đính kèm ảnh">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            </button>
+            <button class="tool-btn" title="Thêm nguồn tin">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+            </button>
+          </div>
+          <button class="btn-publish">Đăng tin</button>
+        </div>
+      </div>
+
+      <!-- POST 1: JOURNALIST VERIFIED POST -->
+      <article class="post-card journalist-post">
+        <div class="post-header">
+          <div class="post-author-box">
+            <div class="user-avatar" style="background:#0284C7; color:white;">LB</div>
+            <div class="author-info">
+              <div class="author-name-row">
+                <span>Lê Bình</span>
+                <span class="badge-journalist">
+                  <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                  Nhà báo xác thực
+                </span>
+              </div>
+              <span class="post-time">Ban Thời sự • 15 phút trước</span>
+            </div>
+          </div>
+          <button class="btn-more" title="Tùy chọn">•••</button>
+        </div>
+
+        <div class="post-content">
+          <p><strong>[NÓNG] Hà Nội chính thức thông qua phương án phân luồng giao thông mới tại nút giao Ngã Tư Sở từ sáng mai:</strong></p>
+          <p>Theo Sở GTVT Hà Nội, các phương tiện từ Trường Chinh đi Láng sẽ đi theo hướng cầu vượt hoặc đường gom chuyên biệt để giảm thiểu ùn tắc cục bộ trong giờ cao điểm.</p>
+          <div class="post-image-box" style="height: 200px; display: flex; align-items: center; justify-content: center; background: #E2E8F0; color: #64748B;">
+            <span>📸 [Hình ảnh phác đồ phân luồng giao thông mới Ngã Tư Sở]</span>
+          </div>
+        </div>
+
+        <div class="post-actions">
+          <div class="action-group">
+            <button class="action-btn active-like">
+              <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span>342</span>
+            </button>
+            <button class="action-btn">
+              <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/></svg>
+              <span>58</span>
+            </button>
+            <button class="action-btn">
+              <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+              <span>Chia sẻ</span>
+            </button>
+          </div>
+          <button class="action-btn" title="Báo cáo bài viết">
+            <svg viewBox="0 0 24 24"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg>
+          </button>
+        </div>
+      </article>
+
+      <!-- POST 2: COMMUNITY USER POST -->
+      <article class="post-card">
+        <div class="post-header">
+          <div class="post-author-box">
+            <div class="user-avatar" style="background:#E2E8F0; color:#475569;">TD</div>
+            <div class="author-info">
+              <div class="author-name-row">
+                <span>Trần Đức</span>
+              </div>
+              <span class="post-time">Người dùng cộng đồng • 42 phút trước</span>
+            </div>
+          </div>
+          <button class="btn-more">•••</button>
+        </div>
+
+        <div class="post-content">
+          <p>Mọi người chú ý: Hiện tại đang có mưa to và ngập nhẹ đoạn ngã tư Thái Hà - Chùa Bộc. Anh em di chuyển qua đây nên đi chậm hoặc chọn lộ trình khác nhé!</p>
+        </div>
+
+        <div class="post-actions">
+          <div class="action-group">
+            <button class="action-btn">
+              <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span>89</span>
+            </button>
+            <button class="action-btn">
+              <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/></svg>
+              <span>14</span>
+            </button>
+            <button class="action-btn">
+              <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+              <span>Chia sẻ</span>
+            </button>
+          </div>
+          <button class="action-btn" title="Báo cáo bài viết">
+            <svg viewBox="0 0 24 24"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg>
+          </button>
+        </div>
+      </article>
+
+      <!-- POST 3: SPONSORED ADVERTISEMENT -->
+      <article class="post-card" style="background: #FAFAFA; border-style: dashed;">
+        <div class="post-header">
+          <div class="post-author-box">
+            <div class="user-avatar" style="background:#FEF3C7; color:#B45309;">AD</div>
+            <div class="author-info">
+              <div class="author-name-row">
+                <span>VinFast Auto</span>
+                <span class="badge-ad">Được tài trợ</span>
+              </div>
+              <span class="post-time">Quảng cáo đối tác</span>
+            </div>
+          </div>
+          <button class="btn-more">•••</button>
+        </div>
+        <div class="post-content">
+          <p>Trải nghiệm dòng xe điện thông minh VF3 mới nhất. Đăng ký lái thử ngay hôm nay để nhận quà tặng độc quyền!</p>
+          <div class="post-image-box" style="height: 160px; display: flex; align-items: center; justify-content: center; background: #E0E7FF; color: #4338CA;">
+            <span>🚗 [Banner Quảng cáo VF3 tương thích theo tỷ lệ]</span>
+          </div>
+        </div>
+        <div class="post-actions">
+          <button class="btn-publish" style="background: var(--secondary); font-size: 13px; padding: 6px 16px;">Tìm hiểu thêm</button>
+          <span style="font-size: 12px; color: var(--text-sub);">Quảng cáo hiển thị theo thuật toán</span>
+        </div>
+      </article>
+
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar-right">
+      <div class="card-widget">
+        <div class="widget-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--primary)"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+          Chủ đề nóng
+        </div>
+        <div class="trending-item">
+          <div>
+            <a href="#" class="trending-tag">#GiaoThongHaNoi</a>
+            <div class="trending-count">1.4k thảo luận</div>
+          </div>
+        </div>
+        <div class="trending-item">
+          <div>
+            <a href="#" class="trending-tag">#GiaVangHomNay</a>
+            <div class="trending-count">3.8k thảo luận</div>
+          </div>
+        </div>
+        <div class="trending-item">
+          <div>
+            <a href="#" class="trending-tag">#ThoiTietMienBac</a>
+            <div class="trending-count">850 thảo luận</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-widget">
+        <div class="widget-title">Nhà báo gợi ý theo dõi</div>
+        <div class="journalist-recommend-item">
+          <div class="user-avatar" style="width:34px; height:34px; background:#0284C7; color:white; font-size:12px;">NH</div>
+          <div>
+            <div style="font-size:13px; font-weight:700;">Nguyễn Hùng</div>
+            <div style="font-size:11px; color:var(--text-sub);">Phóng viên Công nghệ</div>
+          </div>
+          <button class="btn-follow">+ Follow</button>
+        </div>
+        <div class="journalist-recommend-item">
+          <div class="user-avatar" style="width:34px; height:34px; background:#0284C7; color:white; font-size:12px;">MA</div>
+          <div>
+            <div style="font-size:13px; font-weight:700;">Mai Anh</div>
+            <div style="font-size:11px; color:var(--text-sub);">Biên tập viên Kinh tế</div>
+          </div>
+          <button class="btn-follow">+ Follow</button>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-bottom-nav">
+    <a href="#" class="mob-nav-item active">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span>Feed</span>
+    </a>
+    <a href="#" class="mob-nav-item">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+      <span>Nhà báo</span>
+    </a>
+    <a href="#" class="mob-nav-item" style="color: var(--primary);">
+      <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      <span>Đăng</span>
+    </a>
+    <a href="#" class="mob-nav-item">
+      <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+      <span>Thông báo</span>
+    </a>
+    <a href="#" class="mob-nav-item">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span>Tôi</span>
+    </a>
+  </nav>
+
+  <script>
+    function setView(view) {
+      const btns = document.querySelectorAll('.view-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      if (view === 'mobile') {
+        document.body.classList.add('mobile-view');
+        btns[1].classList.add('active');
+      } else {
+        document.body.classList.remove('mobile-view');
+        btns[0].classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>
