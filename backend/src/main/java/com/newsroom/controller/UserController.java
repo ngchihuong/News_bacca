@@ -85,7 +85,12 @@ public class UserController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Pageable pageable = PageRequest.of(page, size);
+        // Validate author exists and is active (throws USER_NOT_FOUND if invalid/inactive)
+        this.userService.getPublicUserProfile(id);
+
+        int safePage = Math.max(0, page);
+        int safeSize = Math.min(Math.max(1, size), 100);
+        Pageable pageable = PageRequest.of(safePage, safeSize);
         Page<ArticleDTO> articles = this.articlesService.getArticlesByAuthor(id, pageable);
         return ResponseEntity.ok(
                 BaseOutput.<Page<ArticleDTO>>builder()

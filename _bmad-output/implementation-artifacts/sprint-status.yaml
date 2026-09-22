@@ -29,19 +29,19 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-14-2026 15:53
-last_updated: 09-16-2026 17:24
+last_updated: 09-22-2026 09:08
 project: News
 project_key: NOKEY
 tracking_system: file-system
 story_location: _bmad-output/implementation-artifacts
 development_status:
-  epic-1: in-progress
-  1-1-user-registration-account-creation: review
+  epic-1: done
+  1-1-user-registration-account-creation: done
   1-2-user-login-jwt-authentication-rate-limiting: done
   1-3-user-profile-management-avatar-upload-via-minio: done
-  1-4-public-profile-view-author-showcase: review
-  1-5-dark-light-theme-switcher: backlog
-  epic-1-retrospective: optional
+  1-4-public-profile-view-author-showcase: done
+  1-5-dark-light-theme-switcher: done
+  epic-1-retrospective: done
 
   epic-2: backlog
   2-1-category-tag-selection-for-posts: backlog
@@ -79,3 +79,22 @@ development_status:
   6-2-in-feed-advertisement-injection-display-card: backlog
   6-3-advertisement-impression-click-tracking: backlog
   epic-6-retrospective: optional
+action_items:
+  - id: "epic-1-retro-item-1-commit-working-tree-changes-before-start"
+    epic: 1
+    action: "Commit working tree changes before starting Epic 2"
+    owner: "Developer"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-09-22.md"
+  - id: "epic-1-retro-item-2-ensure-seed-categories-exist-in-mongodb"
+    epic: 1
+    action: "Ensure seed categories exist in MongoDB for Story 2.1"
+    owner: "Developer"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-09-22.md"
+  - id: "epic-1-retro-item-3-maintain-test-automation-velocity-for-ep"
+    epic: 1
+    action: "Maintain test automation velocity for Epic 2 post publishing"
+    owner: "Architect"
+    status: open
+    ref: "_bmad-output/implementation-artifacts/epic-1-retro-2026-09-22.md"

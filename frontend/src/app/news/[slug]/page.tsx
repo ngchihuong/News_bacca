@@ -77,7 +77,7 @@ export default function NewsDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2">
-          <article className="bg-white rounded-lg shadow-md overflow-hidden">
+          <article className="bg-white dark:bg-slate-900 rounded-lg shadow-md border border-slate-100 dark:border-slate-800 overflow-hidden transition-colors">
             <div className="relative h-[435px]">
               <Image
                 src={news.imageUrl || '/placeholder.jpg'}
@@ -88,12 +88,12 @@ export default function NewsDetailPage() {
             </div>
             
             <div className="p-6">
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 text-sm text-gray-600">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 text-sm text-gray-600 dark:text-slate-400">
                 <div className="flex items-center gap-2">
                   <Link href={`/category/${news.categoryId}`} className="hover:text-primary font-medium">
                     {news.categoryName}
                   </Link>
-                  <span className="text-gray-300">/</span>
+                  <span className="text-gray-300 dark:text-slate-600">/</span>
                   <span>{new Date(news.publishedAt).toLocaleDateString('vi-VN', {
                     year: 'numeric',
                     month: 'long',
@@ -106,35 +106,36 @@ export default function NewsDetailPage() {
                     href={`/user/${news.authorId}`}
                     className="inline-flex items-center gap-2 group hover:opacity-90 transition"
                   >
-                    <div className="w-7 h-7 rounded-full bg-slate-200 overflow-hidden relative border border-slate-300">
+                    <div className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden relative border border-slate-300 dark:border-slate-600">
                       <Image
                         src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80"
                         alt={news.authorName || 'Tác giả'}
                         fill
+                        sizes="28px"
                         className="object-cover"
                       />
                     </div>
-                    <span className="font-semibold text-slate-800 group-hover:text-primary transition">
+                    <span className="font-semibold text-slate-800 dark:text-slate-200 group-hover:text-primary transition">
                       {news.authorName || 'Tác giả'}
                     </span>
                   </Link>
                 )}
               </div>
 
-              <h1 className="text-3xl font-bold mb-4">{news.title}</h1>
+              <h1 className="text-3xl font-bold mb-4 text-slate-900 dark:text-slate-100">{news.title}</h1>
 
-              <div className="prose max-w-none mb-6" dangerouslySetInnerHTML={{ __html: news.content }} />
+              <div className="prose dark:prose-invert max-w-none mb-6 dark:text-slate-200" dangerouslySetInnerHTML={{ __html: news.content }} />
 
               {/* Tags */}
               {news.tagNames && news.tagNames.length > 0 && (
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  <h3 className="text-lg font-semibold mb-3">Tags:</h3>
+                <div className="mt-8 pt-6 border-t border-gray-200 dark:border-slate-800">
+                  <h3 className="text-lg font-semibold mb-3 text-slate-900 dark:text-slate-100">Tags:</h3>
                   <div className="flex flex-wrap gap-2">
                     {news.tagNames.map((tag) => (
                       <Link
                         key={tag}
                         href={`/tag/${tag.toLowerCase()}`}
-                        className="px-3 py-1 text-sm bg-gray-100 hover:bg-primary hover:text-white rounded transition-colors"
+                        className="px-3 py-1 text-sm bg-gray-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary hover:text-white rounded transition-colors"
                       >
                         {tag}
                       </Link>
@@ -145,22 +146,23 @@ export default function NewsDetailPage() {
 
               {/* Author Showcase Box */}
               {news.authorId && (
-                <div className="mt-8 pt-6 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50 rounded-xl p-4 border border-slate-200/60">
+                <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50 dark:bg-slate-800/70 rounded-xl p-4 border border-slate-200/60 dark:border-slate-700">
                   <Link
                     href={`/user/${news.authorId}`}
                     className="flex items-center gap-3 group"
                   >
-                    <div className="w-12 h-12 rounded-full bg-slate-200 overflow-hidden relative border-2 border-white shadow-sm flex-shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden relative border-2 border-white dark:border-slate-600 shadow-sm flex-shrink-0">
                       <Image
                         src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80"
                         alt={news.authorName || "Tác giả"}
                         fill
+                        sizes="48px"
                         className="object-cover"
                       />
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500 font-medium">Tác giả bài viết</p>
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-primary transition">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Tác giả bài viết</p>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-primary transition">
                         {news.authorName || "Tác giả"}
                       </h4>
                     </div>
@@ -168,7 +170,7 @@ export default function NewsDetailPage() {
 
                   <Link
                     href={`/user/${news.authorId}`}
-                    className="inline-flex items-center justify-center text-xs font-semibold px-4 py-2 rounded-full border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 transition shadow-sm"
+                    className="inline-flex items-center justify-center text-xs font-semibold px-4 py-2 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition shadow-sm"
                   >
                     Xem hồ sơ tác giả →
                   </Link>
@@ -178,9 +180,9 @@ export default function NewsDetailPage() {
           </article>
 
           {/* Comments Section */}
-          <div className="mt-6 bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-bold mb-4">Comments</h3>
-            <p className="text-gray-600">Comments feature coming soon...</p>
+          <div className="mt-6 bg-white dark:bg-slate-900 rounded-lg shadow-md border border-slate-100 dark:border-slate-800 p-6 transition-colors">
+            <h3 className="text-xl font-bold mb-4 text-slate-900 dark:text-slate-100">Comments</h3>
+            <p className="text-gray-600 dark:text-slate-400">Comments feature coming soon...</p>
           </div>
         </div>
 

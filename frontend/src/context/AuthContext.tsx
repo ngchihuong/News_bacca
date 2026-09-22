@@ -53,13 +53,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return false;
   });
 
-  // Gọi API lấy thông tin account khi có token
+  // Gọi API lấy thông tin account khi có token hoặc khi trạng thái đã đăng nhập
   const hasToken = typeof window !== "undefined" && !!localStorage.getItem("access_token");
   const { data, error, refetch: refetchAccount } = useQuery({
     queryKey: ["account"],
     queryFn: api.getAccount,
-    enabled: hasToken,
+    enabled: typeof window !== "undefined" && (isAuthenticated || hasToken),
     retry: 1,
+    staleTime: 30000,
   });
 
   useEffect(() => {

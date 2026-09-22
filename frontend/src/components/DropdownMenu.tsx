@@ -79,19 +79,19 @@ export default function DropdownMenu({ isMenuOpen, setIsMenuOpen }: Props) {
 
       {/* Dropdown Box */}
       {isMenuOpen && (
-        <div className="absolute right-0 mt-2 bg-white shadow-xl rounded-xl w-72 p-2 border border-gray-100 z-50 text-gray-800 animate-in fade-in duration-150">
+        <div className="absolute right-0 mt-2 bg-white dark:bg-slate-900 shadow-xl rounded-xl w-72 p-2 border border-gray-100 dark:border-slate-800 z-50 text-gray-800 dark:text-slate-100 animate-in fade-in duration-150">
           {isAuthenticated && user ? (
             <>
               {/* Logged-in Header */}
-              <div className="px-3 py-2.5 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg mb-2">
-                <div className="font-semibold text-gray-900 truncate">
+              <div className="px-3 py-2.5 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-slate-800 dark:to-slate-850 rounded-lg mb-2">
+                <div className="font-semibold text-gray-900 dark:text-slate-100 truncate">
                   {user.name || user.username || "Thành viên"}
                 </div>
-                <div className="text-xs text-gray-500 truncate">
+                <div className="text-xs text-gray-500 dark:text-slate-400 truncate">
                   {user.email || user.username}
                 </div>
                 {user.role && (
-                  <span className="inline-block mt-1 px-2 py-0.5 text-[11px] font-medium bg-orange-100 text-orange-700 rounded-full">
+                  <span className="inline-block mt-1 px-2 py-0.5 text-[11px] font-medium bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300 rounded-full">
                     {user.role.replace("ROLE_", "")}
                   </span>
                 )}
@@ -103,10 +103,10 @@ export default function DropdownMenu({ isMenuOpen, setIsMenuOpen }: Props) {
                   <Link
                     href="/admin"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors"
+                    className="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-800 hover:text-orange-600 dark:hover:text-orange-400 rounded-lg transition-colors"
                   >
                     <div className="flex items-center gap-2.5">
-                      <div className="bg-orange-100 text-orange-600 p-1.5 rounded-lg">
+                      <div className="bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 p-1.5 rounded-lg">
                         <FaShieldAlt className="text-base" />
                       </div>
                       <span>Trang quản trị (Admin)</span>
@@ -118,10 +118,10 @@ export default function DropdownMenu({ isMenuOpen, setIsMenuOpen }: Props) {
                 <Link
                   href="/settings/profile"
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-orange-600 rounded-lg transition-colors"
+                  className="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-orange-600 dark:hover:text-orange-400 rounded-lg transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="bg-gray-100 text-gray-600 p-1.5 rounded-lg">
+                    <div className="bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 p-1.5 rounded-lg">
                       <IoSettingsOutline className="text-base" />
                     </div>
                     <span>Cài đặt thông tin cá nhân</span>
@@ -131,12 +131,12 @@ export default function DropdownMenu({ isMenuOpen, setIsMenuOpen }: Props) {
               </div>
 
               {/* Logout Button */}
-              <div className="pt-2 mt-2 border-t border-gray-100">
+              <div className="pt-2 mt-2 border-t border-gray-100 dark:border-slate-800">
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg transition-colors"
                 >
-                  <div className="bg-red-100 text-red-600 p-1.5 rounded-lg">
+                  <div className="bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 p-1.5 rounded-lg">
                     <IoIosLogOut className="text-base" />
                   </div>
                   <span>Đăng xuất</span>
@@ -146,8 +146,8 @@ export default function DropdownMenu({ isMenuOpen, setIsMenuOpen }: Props) {
           ) : (
             <>
               {/* Not Logged In */}
-              <div className="p-2 mb-2 bg-gray-50 rounded-lg text-center">
-                <p className="text-xs text-gray-500 mb-2">Đăng nhập để trải nghiệm đầy đủ các tính năng</p>
+              <div className="p-2 mb-2 bg-gray-50 dark:bg-slate-800 rounded-lg text-center">
+                <p className="text-xs text-gray-500 dark:text-slate-400 mb-2">Đăng nhập để trải nghiệm đầy đủ các tính năng</p>
                 <div className="flex gap-2">
                   <Link
                     href="/auth/login"
@@ -159,7 +159,7 @@ export default function DropdownMenu({ isMenuOpen, setIsMenuOpen }: Props) {
                   <Link
                     href="/auth/register"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex-1 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-lg text-xs font-semibold hover:bg-gray-50 text-center transition"
+                    className="flex-1 py-1.5 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-200 rounded-lg text-xs font-semibold hover:bg-gray-50 dark:hover:bg-slate-600 text-center transition"
                   >
                     Đăng ký
                   </Link>
@@ -170,10 +170,10 @@ export default function DropdownMenu({ isMenuOpen, setIsMenuOpen }: Props) {
                 <Link
                   href="/auth/login"
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                  className="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="bg-gray-100 text-gray-600 p-1.5 rounded-lg">
+                    <div className="bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 p-1.5 rounded-lg">
                       <IoIosLogIn className="text-base" />
                     </div>
                     <span>Đăng nhập tài khoản</span>
@@ -183,10 +183,10 @@ export default function DropdownMenu({ isMenuOpen, setIsMenuOpen }: Props) {
                 <Link
                   href="/auth/register"
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                  className="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="bg-orange-100 text-orange-600 p-1.5 rounded-lg">
+                    <div className="bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 p-1.5 rounded-lg">
                       <FaRegUserCircle className="text-base" />
                     </div>
                     <span>Tạo tài khoản mới</span>

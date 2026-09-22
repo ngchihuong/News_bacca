@@ -6,6 +6,7 @@ import { FaPencilAlt, FaSearch } from "react-icons/fa";
 import MobilePanel from "./mobile/MobilePanel";
 import MobileSearch from "./mobile/MobileSearch";
 import DropdownMenu from "./DropdownMenu";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,33 +15,33 @@ export default function Header() {
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 h-14 bg-white border-b border-[#e0e0e0]
-    flex justify-between items-center py-0 px-2 z-[200] shadow-sm md:h-20 md:px-3 xs:px-12"
+        className="fixed top-0 left-0 right-0 h-14 bg-white dark:bg-slate-900 border-b border-[#e0e0e0] dark:border-slate-800
+    flex justify-between items-center py-0 px-2 z-[200] shadow-sm md:h-20 md:px-3 xs:px-12 transition-colors duration-200"
       >
         {/* mobile panel */}
         <MobilePanel />
         {/* mobile panel */}
 
         <div className="flex items-center gap-3 xs:gap-8">
-          <div className="font-bold text-[#e60023] cursor-pointer text-[16px] xs:text-[18px] md:text-2xl">
+          <Link href="/" className="font-bold text-[#e60023] cursor-pointer text-[16px] xs:text-[18px] md:text-2xl">
             Cacbac
-          </div>
+          </Link>
           <nav className="hidden md:flex gap-2">
             <Link
               href="/"
-              className="text-black text-[16px] font-semibold py-3 px-4 rounded-3xl transition-colors duration-200 hover:bg-[#e9e9e9]"
+              className="text-black dark:text-slate-200 text-[16px] font-semibold py-3 px-4 rounded-3xl transition-colors duration-200 hover:bg-[#e9e9e9] dark:hover:bg-slate-800"
             >
               Home
             </Link>
             <Link
               href="/trending"
-              className="text-black text-[16px] font-semibold py-3 px-4 rounded-3xl transition-colors duration-200 hover:bg-[#e9e9e9]"
+              className="text-black dark:text-slate-200 text-[16px] font-semibold py-3 px-4 rounded-3xl transition-colors duration-200 hover:bg-[#e9e9e9] dark:hover:bg-slate-800"
             >
               Trending
             </Link>
             <Link
               href="/following"
-              className="text-black text-[16px] font-semibold py-3 px-4 rounded-3xl transition-colors duration-200 hover:bg-[#e9e9e9]"
+              className="text-black dark:text-slate-200 text-[16px] font-semibold py-3 px-4 rounded-3xl transition-colors duration-200 hover:bg-[#e9e9e9] dark:hover:bg-slate-800"
             >
               Following
             </Link>
@@ -50,16 +51,16 @@ export default function Header() {
           <div className="hidden md:relative md:block">
             <input
               type="text"
-              className="w-72 py-3 px-4 border-none bg-[#efefef] rounded-3xl text-sm outline-none focus:bg-[#e0e0e0]"
+              className="w-72 py-3 px-4 border-none bg-[#efefef] dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-gray-500 dark:placeholder-slate-400 rounded-3xl text-sm outline-none focus:bg-[#e0e0e0] dark:focus:bg-slate-700 transition-colors duration-200"
               placeholder="Search news...."
             />
           </div>
           <div
-            className="block md:hidden text-[20px] cursor-pointer p-2 text-black transition-colors duration-200 rounded-lg 
-        hover:bg-[#f0f0f0]"
+            className="block md:hidden text-[20px] cursor-pointer p-2 text-black dark:text-slate-200 transition-colors duration-200 rounded-lg 
+        hover:bg-[#f0f0f0] dark:hover:bg-slate-800"
             onClick={() => setIsMobileSearchOpen(true)}
           >
-            <FaSearch className="text-blue-600" />
+            <FaSearch className="text-blue-600 dark:text-blue-400" />
           </div>
           <Link href="/post/create">
             <button
@@ -73,14 +74,17 @@ export default function Header() {
             </button>
           </Link>
 
+          {/* Theme switcher toggle */}
+          <ThemeToggle />
+
           {/* Account setting */}
           <DropdownMenu isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
           {/* Account setting */}
         </div>
       </header>
       <div
-        className="hidden md:block fixed top-20 left-0 w-60 h-[calc(100vh-7rem)] bg-white border-r border-[#e0e0e0] 
-      py-1 px-4 overflow-y-auto z-50 scrollbar-hover"
+        className="hidden md:block fixed top-20 left-0 w-60 h-[calc(100vh-7rem)] bg-white dark:bg-slate-900 border-r border-[#e0e0e0] dark:border-slate-800 
+      py-1 px-4 overflow-y-auto z-50 scrollbar-hover transition-colors duration-200"
       >
         
       </div>

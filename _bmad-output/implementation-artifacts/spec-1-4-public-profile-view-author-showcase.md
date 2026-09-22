@@ -114,6 +114,19 @@ context:
 - [x] [Review][Verified] Verified badge adheres to DESIGN.md tokens with fallback for regular authors [frontend/src/components/JournalistBadge.tsx:1]
 - [x] [Review][Verified] Frontend handles empty articles gracefully with empty state component [frontend/src/app/user/[id]/page.tsx:325]
 
+### Review Findings (Adversarial Code Review)
+
+- [x] [Review][Decision] Kiểm tra tồn tại tác giả trong endpoint /api/v1/user/{id}/articles — Đã thêm kiểm tra tồn tại và active của tác giả qua userService.getPublicUserProfile(id), ném USER_NOT_FOUND (404) đồng nhất [backend/src/main/java/com/newsroom/controller/UserController.java:83]
+- [x] [Review][Patch] Bổ sung ràng buộc tham số phân trang page/size tránh lỗi 500 IllegalArgumentException [backend/src/main/java/com/newsroom/controller/UserController.java:83]
+- [x] [Review][Patch] Sửa fallback thumbnail bài viết không tồn tại /placeholder.jpg [frontend/src/app/user/[id]/page.tsx:55]
+- [x] [Review][Patch] Thêm sizes attribute cho Next.js Image fill trong news detail [frontend/src/app/news/[slug]/page.tsx:111]
+- [x] [Review][Patch] Bổ sung index MongoDB cho trường author_id và created_at [backend/src/main/java/com/newsroom/model/Article.java:16]
+- [x] [Review][Patch] Bổ sung unit test cho ArticleServiceImpl.getArticlesByAuthor [backend/src/test/java/com/newsroom/service/article/ArticleServiceAuthorArticlesTest.java:1]
+
+#### Rejected Findings Appendix:
+- Rejected (false): `frontend/src/app/user/[id]/page.tsx:909` — `followersCount` không thể là undefined gây lỗi NaN vì backend dùng primitive `int`, Jackson luôn serialize là 0.
+- Rejected (false): `backend/src/main/java/com/newsroom/config/SecurityConfiguration.java:68` — Ant matcher không có dấu gạch chéo đầu là convention chuẩn của toàn dự án trong `ApiPrefixConstants`.
+
 ## Design Notes
 
 - **JournalistBadge Visual Token:**
