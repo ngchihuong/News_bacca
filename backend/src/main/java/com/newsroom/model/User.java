@@ -38,9 +38,34 @@ public class User {
     @Field(name = "avatar_url")
     private String avatarUrl;
 
+    private String bio;
+
+    @Field(name = "is_journalist_verified")
+    @Builder.Default
+    private boolean isJournalistVerified = false;
+
+    @Field(name = "journalist_organization")
+    private String journalistOrganization;
+
+    @Field(name = "followers_count")
+    @Builder.Default
+    private int followersCount = 0;
+
+    @Field(name = "following_count")
+    @Builder.Default
+    private int followingCount = 0;
+
     private String role;
 
+    @Builder.Default
     private boolean active = false;
+
+    @Field(name = "failed_login_attempts")
+    @Builder.Default
+    private int failedLoginAttempts = 0;
+
+    @Field(name = "lockout_until")
+    private Instant lockoutUntil;
 
     @Field(name = "refresh_token")
     private String refreshToken;

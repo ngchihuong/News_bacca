@@ -84,10 +84,29 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    @ExceptionHandler(value = AppException.class)
+    public ResponseEntity<Object> handleAppException(AppException e) {
+        com.newsroom.enums.ErrorCode errorCode = e.getErrorCode();
+        String displayMessage = e.getMessage() != null ? e.getMessage() : errorCode.getMessage();
+        log.error("ERROR AppException: [{}] {}", errorCode.name(), displayMessage);
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(
+                        BaseOutput.builder()
+                                .status(ResponseStatus.FAILED)
+                                .errors(List.of(displayMessage))
+                                .message(displayMessage)
+                                .data(java.util.Map.of(
+                                        "errorCode", errorCode.getCode(),
+                                        "errorName", errorCode.name()
+                                ))
+                                .build()
+                );
+    }
+
     @ExceptionHandler(value = NewsCommonException.class)
     public ResponseEntity<Object> handleTCCommonException(NewsCommonException e) {
-        log.error("ERROR TCCommonException: {}", e.getMessage());
-        return ResponseEntity.status(HttpStatus.OK)
+        log.error("ERROR NewsCommonException: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(
                         BaseOutput.builder()
                                 .errors(List.of(e.getMessage()))

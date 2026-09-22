@@ -1,4 +1,4 @@
-import { AuthResponse, BaseOutput, UserLogin } from "@/types/backend";
+import { AuthResponse, BaseOutput, RegisterRequest, UserDTO, UserLogin } from "@/types/backend";
 import axios from "@/utils/axios-customize";
 
 const API_URL =
@@ -10,6 +10,11 @@ export const login = (username: string, password: string) => {
     password,
   });
 };
+
+export const register = (data: RegisterRequest) => {
+  return axios.post<BaseOutput<UserDTO>>(`${API_URL}/auth/register`, data);
+};
+
 export const getAccount = () => {
   return axios.get<BaseOutput<UserLogin>>(`${API_URL}/auth/account`);
-}
+};

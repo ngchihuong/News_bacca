@@ -15,8 +15,8 @@ export default function LatestNews({ news }: LatestNewsProps) {
 
   return (
     <div>
-      <div className="flex items-center justify-between bg-gray-100 py-2 px-4 mb-4">
-        <h3 className="text-xl font-bold">Latest News</h3>
+      <div className="flex items-center justify-between bg-gray-100 dark:bg-slate-800 py-2 px-4 mb-4 rounded">
+        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">Latest News</h3>
         <Link href="/latest" className="text-primary text-sm font-medium">
           View All
         </Link>
@@ -33,8 +33,8 @@ export default function LatestNews({ news }: LatestNewsProps) {
                 className="object-cover"
               />
             </Link>
-            <div className="bg-gray-50 p-4">
-              <div className="text-sm text-gray-600 mb-2">
+            <div className="bg-gray-50 dark:bg-slate-800/80 p-4 border border-transparent dark:border-slate-700/60 rounded-b">
+              <div className="text-sm text-gray-600 dark:text-slate-400 mb-2">
                 <Link href={`/category/${item.categoryId}`} className="hover:text-primary">
                   {item.categoryName}
                 </Link>
@@ -42,11 +42,11 @@ export default function LatestNews({ news }: LatestNewsProps) {
                 <span>{new Date(item.publishedAt).toLocaleDateString()}</span>
               </div>
               <Link href={`/news/${item.slug}`}>
-                <h4 className="text-xl font-semibold mb-2 hover:text-primary transition-colors">
+                <h4 className="text-xl font-semibold mb-2 text-slate-900 dark:text-slate-100 hover:text-primary transition-colors">
                   {item.title}
                 </h4>
               </Link>
-              <p className="text-gray-600 line-clamp-2">{item.excerpt}</p>
+              <p className="text-gray-600 dark:text-slate-300 line-clamp-2">{item.excerpt}</p>
             </div>
           </div>
         ))}
@@ -61,8 +61,8 @@ export default function LatestNews({ news }: LatestNewsProps) {
                 className="object-cover rounded"
               />
             </div>
-            <div className="flex-1 bg-gray-50 p-3 rounded">
-              <div className="text-xs text-gray-600 mb-1">
+            <div className="flex-1 bg-gray-50 dark:bg-slate-800/80 p-3 rounded border border-transparent dark:border-slate-700/60">
+              <div className="text-xs text-gray-600 dark:text-slate-400 mb-1">
                 <Link href={`/category/${item.categoryId}`} className="hover:text-primary">
                   {item.categoryName}
                 </Link>
@@ -70,7 +70,7 @@ export default function LatestNews({ news }: LatestNewsProps) {
                 <span>{new Date(item.publishedAt).toLocaleDateString()}</span>
               </div>
               <Link href={`/news/${item.slug}`}>
-                <h5 className="text-sm font-semibold hover:text-primary transition-colors line-clamp-2">
+                <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100 hover:text-primary transition-colors line-clamp-2">
                   {item.title}
                 </h5>
               </Link>

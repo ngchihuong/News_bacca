@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direction 3: Compact Community — NewsRoom</title>
+  <!--
+    Design Direction 3: Compact Community (High-Density Social Feed)
+    Colors:
+      --primary: #EA580C (Cam gạch mạnh mẽ)
+      --secondary: #1E3A8A (Xanh Blue đậm)
+      --surface: #FFFFFF
+      --bg: #F3F4F6
+      --border: #E5E7EB
+  -->
+  <style>
+    :root {
+      --primary: #EA580C;
+      --primary-hover: #C2410C;
+      --secondary: #1E3A8A;
+      --badge-journalist: #0369A1;
+      --surface: #FFFFFF;
+      --bg: #F3F4F6;
+      --border: #E5E7EB;
+      --border-dark: #D1D5DB;
+      --text-main: #111827;
+      --text-muted: #4B5563;
+      --text-sub: #6B7280;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+    /* Rationale Header */
+    .rationale-bar {
+      background: #111827;
+      color: #F9FAFB;
+      padding: 12px 24px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #374151;
+    }
+    .rationale-badge {
+      background: #EA580C;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 11px;
+      margin-right: 8px;
+    }
+    .view-toggle { display: flex; gap: 6px; }
+    .view-btn {
+      background: #1F2937;
+      color: #9CA3AF;
+      border: 1px solid #374151;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .view-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Top Nav */
+    .compact-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .header-content {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .brand-pill {
+      background: var(--primary);
+      color: white;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    /* Main Container */
+    .container-layout {
+      max-width: 1120px;
+      margin: 16px auto;
+      display: grid;
+      grid-template-columns: 200px 1fr 280px;
+      gap: 16px;
+      padding: 0 12px;
+      transition: max-width 0.3s;
+    }
+    body.mobile-view .container-layout {
+      max-width: 430px;
+      grid-template-columns: 1fr;
+      padding: 0 0 60px 0;
+    }
+    body.mobile-view .left-col,
+    body.mobile-view .right-col {
+      display: none;
+    }
+
+    /* Left Filters */
+    .filter-panel {
+      background: var(--surface);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+    }
+    .filter-heading {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      padding: 6px 8px;
+    }
+    .filter-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      text-align: left;
+      padding: 8px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: #FFF7ED;
+      color: var(--primary);
+    }
+    .filter-count {
+      font-size: 11px;
+      background: #F3F4F6;
+      padding: 1px 6px;
+      border-radius: 10px;
+      color: var(--text-sub);
+    }
+
+    /* Center Feed */
+    .stream-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Compact Composer */
+    .compact-composer {
+      background: var(--surface);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .composer-input-field {
+      flex: 1;
+      background: #F9FAFB;
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      outline: none;
+    }
+    .btn-submit-quick {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* Dense Item Row */
+    .feed-row {
+      background: var(--surface);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      transition: background-color 0.1s;
+    }
+    .feed-row:hover {
+      background-color: #FAFAFA;
+    }
+    .feed-row.is-journalist {
+      border-left: 4px solid var(--badge-journalist);
+    }
+
+    /* Vote Column */
+    .vote-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      min-width: 44px;
+    }
+    .vote-btn {
+      background: #F3F4F6;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      width: 32px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .vote-btn:hover {
+      background: #E5E7EB;
+      color: var(--text-main);
+    }
+    .vote-count {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text-main);
+    }
+
+    /* Content Area */
+    .row-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .row-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+    .pill-journalist {
+      background: #E0F2FE;
+      color: #0369A1;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+    }
+    .pill-topic {
+      background: #F3F4F6;
+      color: #374151;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .row-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.4;
+      text-decoration: none;
+    }
+    .row-title:hover {
+      color: var(--primary);
+    }
+    .row-snippet {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .row-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+    .action-link {
+      color: var(--text-sub);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .action-link:hover {
+      color: var(--primary);
+    }
+
+    /* Thumbnail Right */
+    .row-thumb {
+      width: 90px;
+      height: 70px;
+      background: #E5E7EB;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6B7280;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    /* Right Sidebar */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .dense-box {
+      background: var(--surface);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+    }
+    .box-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--secondary);
+      margin-bottom: 8px;
+    }
+
+    /* Mobile Bottom Nav */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      padding: 8px 16px;
+      z-index: 100;
+      justify-content: space-around;
+    }
+    body.mobile-view .mobile-bottom-nav { display: flex; }
+    .mob-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 11px;
+    }
+    .mob-btn.active { color: var(--primary); font-weight: 700; }
+  </style>
+</head>
+<body>
+
+  <!-- Rationale Bar -->
+  <div class="rationale-bar">
+    <div>
+      <span class="rationale-badge">Hướng 3: Compact Community</span>
+      <strong>High-Density Community Hub</strong> — Phong cách diễn đàn & mạng xã hội tốc độ cao (giống Reddit/HackerNews). Mật độ tin tức cao, tối ưu quét nhiều tin trong thời gian ngắn.
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" onclick="setView('desktop')">Màn hình Máy tính</button>
+      <button class="view-btn" onclick="setView('mobile')">Màn hình Di động</button>
+    </div>
+  </div>
+
+  <header class="compact-header">
+    <div class="header-content">
+      <div class="brand-title">
+        NewsRoom <span class="brand-pill">Cộng đồng</span>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button class="btn-submit-quick">+ Đăng tin nhanh</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-layout">
+
+    <!-- Left Filter -->
+    <aside class="left-col">
+      <div class="filter-panel">
+        <div class="filter-heading">Bộ lọc luồng</div>
+        <button class="filter-btn active">
+          <span>🔥 Nóng nhất hôm nay</span>
+          <span class="filter-count">142</span>
+        </button>
+        <button class="filter-btn">
+          <span>🎖️ Chỉ tin Nhà báo</span>
+          <span class="filter-count">38</span>
+        </button>
+        <button class="filter-btn">
+          <span>👥 Tin cộng đồng gửi</span>
+          <span class="filter-count">104</span>
+        </button>
+        <button class="filter-btn">
+          <span>⭐ Đang theo dõi</span>
+          <span class="filter-count">12</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Stream -->
+    <main class="stream-feed">
+
+      <!-- Composer -->
+      <div class="compact-composer">
+        <div style="font-weight: 700; color: var(--primary);">✏️</div>
+        <input type="text" class="composer-input-field" placeholder="Chia sẻ tin tức, sự kiện hoặc cảnh báo giao thông...">
+        <button class="btn-submit-quick">Gửi</button>
+      </div>
+
+      <!-- ROW 1: JOURNALIST -->
+      <div class="feed-row is-journalist">
+        <div class="vote-column">
+          <button class="vote-btn">▲</button>
+          <span class="vote-count">486</span>
+          <button class="vote-btn">▼</button>
+        </div>
+        <div class="row-main">
+          <div class="row-meta">
+            <span class="pill-journalist">✓ Nhà báo TTXVN</span>
+            <span class="pill-topic">#GiaoThong</span>
+            <span>Đăng bởi <strong>Lê Bình</strong> • 30 phút trước</span>
+          </div>
+          <a href="#" class="row-title">[Chính thức] Hà Nội thông qua kế hoạch phân luồng lại nút giao Ngã Tư Sở từ ngày mai</a>
+          <p class="row-snippet">CSGT sẽ lập rào chắn mềm và hướng dẫn xe máy đi vào làn gom riêng dưới gầm cầu vượt...</p>
+          <div class="row-actions">
+            <a href="#" class="action-link">💬 82 Thảo luận</a>
+            <a href="#" class="action-link">↗️ Chia sẻ</a>
+            <a href="#" class="action-link" style="color: #9CA3AF;">🚩 Báo cáo vi phạm</a>
+          </div>
+        </div>
+        <div class="row-thumb">📸 Hình ảnh</div>
+      </div>
+
+      <!-- ROW 2: COMMUNITY -->
+      <div class="feed-row">
+        <div class="vote-column">
+          <button class="vote-btn">▲</button>
+          <span class="vote-count">115</span>
+          <button class="vote-btn">▼</button>
+        </div>
+        <div class="row-main">
+          <div class="row-meta">
+            <span class="pill-topic">#ĐôThị</span>
+            <span>Đăng bởi <strong>Trần Đức</strong> • 45 phút trước</span>
+          </div>
+          <a href="#" class="row-title">Cảnh báo: Ngã tư Chùa Bộc - Thái Hà đang ngập sâu tầm 30cm do mưa lớn</a>
+          <p class="row-snippet">Các xe gầm thấp và xe tay ga nên tránh đoạn này, nhiều xe đã bị chết máy giữa đường.</p>
+          <div class="row-actions">
+            <a href="#" class="action-link">💬 29 Thảo luận</a>
+            <a href="#" class="action-link">↗️ Chia sẻ</a>
+            <a href="#" class="action-link" style="color: #9CA3AF;">🚩 Báo cáo</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 3: AD ROW -->
+      <div class="feed-row" style="background: #FFFBEB; border-color: #FCD34D;">
+        <div class="vote-column">
+          <span style="font-size: 11px; font-weight: 700; color: #B45309;">AD</span>
+        </div>
+        <div class="row-main">
+          <div class="row-meta">
+            <span style="background: #FEF3C7; color: #B45309; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 3px;">Tài trợ</span>
+            <span>VinFast Auto</span>
+          </div>
+          <a href="#" class="row-title" style="color: #78350F;">Lái thử VinFast VF3 - Nhận ngay ưu đãi 10 triệu đồng lệ phí trước bạ</a>
+          <div class="row-actions">
+            <a href="#" class="action-link" style="color: #B45309; font-weight: 700;">Xem chi tiết khuyến mãi →</a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside class="right-col">
+      <div class="dense-box">
+        <div class="box-title">Quy chuẩn cộng đồng</div>
+        <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+          • Thông tin phải có địa điểm rõ ràng.<br>
+          • Nghiêm cấm tin đồn thất thiệt.<br>
+          • Bài viết vi phạm sẽ bị khóa sau 3 báo cáo hợp lệ.
+        </p>
+      </div>
+      <div class="dense-box">
+        <div class="box-title">Xu hướng tin tức</div>
+        <div style="font-size: 13px; font-weight: 700; color: var(--primary); padding: 4px 0;">#GiaoThongHaNoi</div>
+        <div style="font-size: 13px; font-weight: 700; color: var(--primary); padding: 4px 0;">#NgayMoiVTV</div>
+        <div style="font-size: 13px; font-weight: 700; color: var(--primary); padding: 4px 0;">#GiaVangSJC</div>
+      </div>
+    </aside>
+
+  </div>
+
+  <nav class="mobile-bottom-nav">
+    <a href="#" class="mob-btn active">🔥 <span>Tin nóng</span></a>
+    <a href="#" class="mob-btn">🎖️ <span>Nhà báo</span></a>
+    <a href="#" class="mob-btn">✏️ <span>Đăng tin</span></a>
+    <a href="#" class="mob-btn">🔔 <span>Chuông</span></a>
+    <a href="#" class="mob-btn">👤 <span>Tài khoản</span></a>
+  </nav>
+
+  <script>
+    function setView(view) {
+      const btns = document.querySelectorAll('.view-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      if (view === 'mobile') {
+        document.body.classList.add('mobile-view');
+        btns[1].classList.add('active');
+      } else {
+        document.body.classList.remove('mobile-view');
+        btns[0].classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -20,8 +20,8 @@ export default function Footer() {
   return (
     <div className="fixed bottom-0 left-0 right-0">
       {/* Footer desktop */}
-      <footer className="hidden md:block bg-gray-100 pt-1 pb-1">
-        <p className="text-center text-gray-600">
+      <footer className="hidden md:block bg-gray-100 dark:bg-slate-900 border-t border-[#e0e0e0] dark:border-slate-800 pt-1 pb-1 transition-colors duration-200">
+        <p className="text-center text-gray-600 dark:text-slate-400 text-sm">
           © {new Date().getFullYear()} <span className="font-bold">Cacbac</span>
           . All Rights Reserved.
         </p>
@@ -29,8 +29,8 @@ export default function Footer() {
 
       {/* Footer mobile */}
       <nav
-        className="flex md:hidden bg-gray-100 border-t border-[#e0e0e0] py-2 px-0 z-10 
-        shadow-[0px_-2px_10px_rgba(0,0,0,0.05)]"
+        className="flex md:hidden bg-gray-100 dark:bg-slate-900 border-t border-[#e0e0e0] dark:border-slate-800 py-2 px-0 z-10 
+        shadow-[0px_-2px_10px_rgba(0,0,0,0.05)] transition-colors duration-200"
       >
         {links.map((link: any) => {
           const isActive = pathname === link.href;
@@ -42,8 +42,8 @@ export default function Footer() {
               className={`flex-1 flex flex-col items-center justify-center py-2 px-1 gap-1 transition-colors duration-200 
                 ${
                   isActive
-                    ? "text-red-600 bg-gray-200 font-semibold"
-                    : "text-[#767676] hover:text-[#111]"
+                    ? "text-primary dark:text-orange-500 bg-gray-200 dark:bg-slate-800 font-semibold"
+                    : "text-[#767676] dark:text-slate-400 hover:text-[#111] dark:hover:text-slate-100"
                 }`}
             >
               <span className="text-lg md:text-xl">{link.icon}</span>

@@ -3,6 +3,7 @@ package com.newsroom.controller.auth;
 import com.newsroom.commons.ApiPrefixConstants;
 import com.newsroom.commons.Constants;
 import com.newsroom.config.exceptions.NewsCommonException;
+import com.newsroom.dto.RegisterRequest;
 import com.newsroom.dto.ResponseDTO.BaseOutput;
 import com.newsroom.dto.UserDTO;
 import com.newsroom.dto.auth.JwtResponse;
@@ -57,8 +58,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<BaseOutput<?>> register(@Valid @RequestBody User user) {
-        if (user == null) {
+    public ResponseEntity<BaseOutput<?>> register(@Valid @RequestBody RegisterRequest request) {
+        if (request == null) {
             return ResponseEntity.badRequest()
                     .body(
                             BaseOutput.builder()
@@ -67,13 +68,13 @@ public class AuthController {
                                     .build()
                     );
         }
-        UserDTO userDTO = this.authService.register(user);
+        UserDTO userDTO = this.authService.register(request);
         return ResponseEntity.ok()
                 .body(
                         BaseOutput.<UserDTO>builder()
                                 .status(ResponseStatus.SUCCESS)
                                 .data(userDTO)
-                                .message(HttpStatus.OK.toString())
+                                .message("Đăng ký tài khoản thành công")
                                 .build()
                 );
     }
@@ -84,9 +85,10 @@ public class AuthController {
 
         ResponseCookie deleteSpringCookie =
                 ResponseCookie
-                        .from("refresh_token", null)
+                        .from("refresh_token", "")
                         .httpOnly(true)
-                        .secure(true)
+                        .secure(false)
+                        .sameSite("Lax")
                         .path("/")
                         .maxAge(0)
                         .build();
@@ -103,10 +105,13 @@ public class AuthController {
 
     @GetMapping("/refresh")
     public ResponseEntity<BaseOutput<?>> getRefreshToken(
-            @CookieValue(name = "refresh_token", defaultValue = "huongdeptrai") String refreshToken
+            @CookieValue(name = "refresh_token", required = false) String refreshToken
     ) {
-        if (refreshToken.equals("huongdeptrai")) {
-            throw new NewsCommonException(Constants.ERROR.REQUEST.INVALID_PATH_VARIABLE_ID);
+        if (refreshToken == null || refreshToken.isBlank()) {
+            throw new com.newsroom.config.exceptions.AppException(
+                    com.newsroom.enums.ErrorCode.TOKEN_EXPIRED,
+                    "Refresh token không tồn tại hoặc đã hết hạn"
+            );
         }
         JwtResponse response = this.authService.getRefreshToken(refreshToken);
         return ResponseEntity.ok()
